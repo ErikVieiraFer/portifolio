@@ -1,108 +1,93 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'cursor.dart'; // Importe o cursor horizontal
 
-class Header extends StatelessWidget {
+class Header extends StatefulWidget {
   const Header({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
-      alignment: Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [NeonName(), SizedBox(height: 8), GradientSubtitle()],
-      ),
-    );
-  }
+  State<Header> createState() => _HeaderState();
 }
 
-// NOME COM GRADIENTE + SOMBRA NEON ANIMADA
-class NeonName extends StatefulWidget {
-  const NeonName({super.key});
-
-  @override
-  State<NeonName> createState() => _NeonNameState();
-}
-
-class _NeonNameState extends State<NeonName>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _glow;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    _glow = Tween<double>(
-      begin: 5.0,
-      end: 20.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _HeaderState extends State<Header> {
+  bool _showCursor = false;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _glow,
-      builder: (context, child) {
-        return ShaderMask(
-          shaderCallback:
-              (bounds) => const LinearGradient(
-                colors: [Colors.pinkAccent, Colors.blueAccent],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ).createShader(bounds),
-          child: Text(
-            'Erik Vieira',
-            style: GoogleFonts.orbitron(
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  color: Colors.blueAccent.withAlpha(
-                    (_glow.value * 10).toInt(),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Container para alinhar texto + cursor
+            Container(
+              padding: const EdgeInsets.only(bottom: 4), // Ajuste de posição
+              child: Row(
+                mainAxisSize: MainAxisSize.min, // Evita ocupar largura total
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end, // Alinha na base
+                children: [
+                  // Texto com efeito de digitação
+                  AnimatedTextKit(
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        'ERIK VIEIRA',
+                        textStyle: GoogleFonts.pressStart2p(
+                          fontSize: 32,
+                          color: const Color.fromARGB(255, 233, 77, 30),
+                          shadows: [
+                            Shadow(
+                              color: const Color.fromARGB(185, 255, 235, 59),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        speed: const Duration(milliseconds: 100),
+                      ),
+                    ],
+                    totalRepeatCount: 1,
+                    onFinished: () => setState(() => _showCursor = true),
                   ),
-                  blurRadius: _glow.value,
-                ),
-              ],
+                  // Cursor horizontal rosa
+                  if (_showCursor) const HorizontalBlinkingCursor(),
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    );
-  }
-}
 
-// SUBTÍTULO COM GRADIENTE (AZUL PRA ROSA)
-class GradientSubtitle extends StatelessWidget {
-  const GradientSubtitle({super.key});
+            // Subtítulo
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Text(
+                'FLUTTER DEVELOPER',
+                style: GoogleFonts.pressStart2p(
+                  fontSize: 16,
+                  color: Colors.cyan,
+                ),
+              ),
+            ),
 
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback:
-          (bounds) => const LinearGradient(
-            colors: [Colors.blueAccent, Colors.pinkAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ).createShader(bounds),
-      child: Text(
-        'Desenvolvedor Flutter & Mobile',
-        style: GoogleFonts.orbitron(
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
-          color: Colors.white,
+            // Efeito de borda neon
+            Container(
+              margin: const EdgeInsets.all(30),
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.yellow, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color.fromARGB(185, 255, 235, 59),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.arrow_downward,
+                color: Colors.white,
+                size: 40,
+              ),
+            ),
+          ],
         ),
       ),
     );
