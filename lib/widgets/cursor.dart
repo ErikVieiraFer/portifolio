@@ -6,8 +6,8 @@ class HorizontalBlinkingCursor extends StatefulWidget {
 
   const HorizontalBlinkingCursor({
     super.key,
-    this.width = 20.0, // Largura do cursor horizontal
-    this.height = 3.0, // Altura fina
+    this.width = 40.0,
+    this.height = 5.0,
   });
 
   @override
@@ -25,7 +25,7 @@ class _HorizontalBlinkingCursorState extends State<HorizontalBlinkingCursor>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
-    )..repeat(reverse: true); // Pisca continuamente
+    )..repeat(reverse: true);
   }
 
   @override
@@ -44,8 +44,8 @@ class _HorizontalBlinkingCursorState extends State<HorizontalBlinkingCursor>
           child: Container(
             width: widget.width,
             height: widget.height,
-            margin: const EdgeInsets.only(left: 2), // Espaço após o texto
-            // No arquivo cursor.dart, substitua o BoxDecoration por:
+            margin: const EdgeInsets.only(left: 2),
+
             decoration: BoxDecoration(
               color: Colors.pink,
               borderRadius: BorderRadius.circular(2),

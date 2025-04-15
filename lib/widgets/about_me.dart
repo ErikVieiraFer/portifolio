@@ -27,7 +27,7 @@ class AboutMe extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Sou apaixonado por tecnologia e desenvolvimento mobile. Gosto de criar interfaces bonitas e funcionais, com atenção aos detalhes. Atualmente estou focado em projetos com Flutter, sempre buscando aprender e evoluir como desenvolvedor.',
+            'Estou começando minha carreira como desenvolvedor, com foco na criação de aplicativos com Flutter e no desenvolvimento web utilizando HTML e CSS. Tenho experiência inicial com C# e estou constantemente buscando aprimorar minhas habilidades por meio da construção de novos projetos e da prática contínua. Meu objetivo é ganhar experiência no mercado e evoluir profissionalmente.',
             style: GoogleFonts.orbitron(fontSize: 16, color: Colors.white70),
           ),
         ],

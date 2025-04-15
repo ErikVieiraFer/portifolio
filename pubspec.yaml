@@ -34,6 +34,7 @@ dependencies:
   google_fonts: ^4.0.4          # Para fontes estilo arcade
   animated_text_kit: ^4.2.2      # Para textos animados
   simple_animations: ^5.0.0      # Para efeitos complexos
+  font_awesome_flutter: ^10.8.0
   
 
   # The following adds the Cupertino Icons font to your application.
@@ -66,6 +67,7 @@ flutter:
   assets:
     - assets/profile.jpg
     - assets/profile2.png
+    - assets/fundo_retro.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

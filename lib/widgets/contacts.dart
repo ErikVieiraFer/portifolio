@@ -29,19 +29,19 @@ class Contacts extends StatelessWidget {
           ContactRow(
             icon: Icons.email,
             label: 'Email',
-            value: 'seuemail@example.com',
+            value: 'erik.vieiradev@hotmail.com',
           ),
           const SizedBox(height: 10),
           ContactRow(
             icon: Icons.phone,
             label: 'Telefone',
-            value: '(11) 91234-5678',
+            value: '(27) 998547188',
           ),
           const SizedBox(height: 10),
           ContactRow(
             icon: Icons.web,
             label: 'GitHub',
-            value: 'github.com/seuperfil',
+            value: 'github.com/ErikVieiraFer',
           ),
         ],
       ),
