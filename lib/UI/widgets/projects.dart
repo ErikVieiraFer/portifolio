@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Projects extends StatelessWidget {
   const Projects({super.key});
@@ -46,11 +47,13 @@ class Projects extends StatelessWidget {
 class ProjectCard extends StatelessWidget {
   final String title;
   final String description;
+  final String? githubUrl;
 
   const ProjectCard({
     super.key,
     required this.title,
     required this.description,
+    this.githubUrl,
   });
 
   @override
@@ -76,8 +79,23 @@ class ProjectCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             description,
-            style: GoogleFonts.orbitron(fontSize: 14, color: Colors.white70),
+            style: GoogleFonts.orbitron(fontSize: 14, color: Colors.white),
           ),
+          if (githubUrl != null) ...[
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () async {
+                final uri = Uri.parse(githubUrl!);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                }
+              },
+              child: Text(
+                'Ver no GitHub',
+                style: GoogleFonts.orbitron(color: Colors.blueAccent),
+              ),
+            ),
+          ],
         ],
       ),
     );

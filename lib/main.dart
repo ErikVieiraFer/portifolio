@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio_flutter/pages/home_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio_flutter/UI/pages/home_page.dart';
+import 'package:portfolio_flutter/UI/theme/app_theme.dart';
+import 'package:portfolio_flutter/infra/cubit/contacts/contacts_cubit.dart';
+import 'package:portfolio_flutter/infra/cubit/curriculum/curriculum_cubit.dart';
+import 'package:portfolio_flutter/infra/cubit/languages/languages_cubit.dart';
 
 void main() {
-  runApp(const MyPortfolioApp());
+  runApp(
+    MaterialApp(
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => ContactsCubit()),
+          BlocProvider(create: (_) => LanguagesCubit()),
+          BlocProvider(create: (_) => CurriculumCubit()),
+        ],
+        child: const MyPortfolioApp(),
+      ),
+    ),
+  );
 }
 
 class MyPortfolioApp extends StatelessWidget {
@@ -12,15 +28,7 @@ class MyPortfolioApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Portfólio Anos 80',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'PressStart2P',
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(color: Colors.pink, fontSize: 40),
-          bodyLarge: TextStyle(color: Colors.cyan, fontSize: 16),
-        ),
-        useMaterial3: true,
-      ),
+      theme: appTheme(),
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
