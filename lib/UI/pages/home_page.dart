@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio_flutter/UI/widgets/about_me.dart';
 import 'package:portfolio_flutter/UI/widgets/contacts.dart';
+import 'package:portfolio_flutter/UI/widgets/curriculum_button.dart';
 import 'package:portfolio_flutter/UI/widgets/header.dart';
-import 'package:portfolio_flutter/UI/widgets/languages_with_cv.dart';
+import 'package:portfolio_flutter/UI/widgets/languages_widget.dart';
 import 'package:portfolio_flutter/UI/widgets/projects.dart';
+import 'package:portfolio_flutter/infra/cubit/curriculum/curriculum_cubit.dart';
+import 'package:portfolio_flutter/infra/cubit/languages/languages_cubit.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class HomePage extends StatefulWidget {
@@ -56,7 +60,22 @@ class _HomePageState extends State<HomePage> {
                   child: const Projects(),
                 ),
                 const AboutMe(),
-                const LanguagesWithCV(),
+                // Seção de Linguagens (sem o botão de currículo)
+                MultiBlocProvider(
+                  providers: [BlocProvider(create: (_) => LanguagesCubit())],
+                  child: const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: LanguagesWidget(),
+                  ),
+                ),
+                // Botão de Currículo reposicionado entre Linguagens e Contato
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: BlocProvider(
+                    create: (_) => CurriculumCubit(),
+                    child: const CurriculumButton(),
+                  ),
+                ),
                 const Contacts(),
               ],
             ),

@@ -1,4 +1,3 @@
-// lib/core/models/language.dart
 import 'package:flutter/material.dart';
 
 class Language {

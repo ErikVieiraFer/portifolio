@@ -9,9 +9,9 @@ class LanguagesCubit extends Cubit<LanguagesState> {
     : super(
         LanguagesState(
           languages: const [
-            Language(name: 'Flutter', proficiency: 0.9, color: Colors.blue),
-            Language(name: 'Dart', proficiency: 0.85, color: Colors.cyan),
-            Language(name: 'C#', proficiency: 0.8, color: Colors.green),
+            Language(name: 'Flutter', proficiency: 0.7, color: Colors.blue),
+            Language(name: 'Dart', proficiency: 0.7, color: Colors.cyan),
+            Language(name: 'C#', proficiency: 0.2, color: Colors.green),
           ],
         ),
       );
