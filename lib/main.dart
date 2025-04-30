@@ -27,7 +27,7 @@ class MyPortfolioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Portfólio Anos 80',
+      title: 'Meu Portfólio',
       theme: appTheme(),
       home: const SplashScreen(), // Alterado para iniciar com a tela de splash
       debugShowCheckedModeBanner: false,
