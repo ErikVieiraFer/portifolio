@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:portfolio_flutter/UI/pages/curriculum_viewer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:portfolio_flutter/infra/cubit/curriculum/curriculum_cubit.dart';
 import 'package:portfolio_flutter/infra/cubit/curriculum/curriculum_state.dart';
 
@@ -16,7 +16,7 @@ class CurriculumButton extends StatelessWidget {
           width: double.infinity,
           margin: const EdgeInsets.symmetric(vertical: 8),
           child: ElevatedButton(
-            onPressed: () => _handlePress(context),
+            onPressed: state is CurriculumReady ? () => _launchPdf() : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.amber,
               foregroundColor: Colors.black,
@@ -56,16 +56,13 @@ class CurriculumButton extends StatelessWidget {
     return const Icon(Icons.picture_as_pdf, color: Colors.black, size: 28);
   }
 
-  void _handlePress(BuildContext context) {
-    if (context.read<CurriculumCubit>().state is CurriculumReady) {
-      showDialog(
-        context: context,
-        builder:
-            (_) => BlocProvider.value(
-              value: context.read<CurriculumCubit>(),
-              child: const CurriculumViewer(),
-            ),
-      );
+  Future<void> _launchPdf() async {
+    const pdfUrl = '/pdf/curriculum.pdf'; // Caminho relativo no GitHub Pages
+    final Uri uri = Uri.parse(pdfUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, webOnlyWindowName: '_blank');
+    } else {
+      debugPrint('Could not launch $pdfUrl');
     }
   }
 }
