@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:portfolio_flutter/infra/cubit/languages/languages_cubit.dart';
-import 'package:portfolio_flutter/infra/cubit/languages/languages_state.dart';
-import 'package:portfolio_flutter/core/models/language.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
-class LanguagesWidget extends StatelessWidget {
+class LanguagesWidget extends StatefulWidget {
   const LanguagesWidget({super.key});
+
+  @override
+  State<LanguagesWidget> createState() => _LanguagesWidgetState();
+}
+
+class _LanguagesWidgetState extends State<LanguagesWidget> {
+  final Map<String, bool> _isHovering = {};
+
+  final Map<String, String> skillModels = const {
+    'assets/models/flutter_logo.glb': 'Flutter',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -18,75 +26,65 @@ class LanguagesWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.cyanAccent, width: 2),
       ),
-      child: BlocBuilder<LanguagesCubit, LanguagesState>(
-        builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Título da seção
-              Text(
-                'Linguagens',
-                style: GoogleFonts.orbitron(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Lista de linguagens sempre visível
-              ...state.languages.map(
-                (language) => _buildLanguageItem(language),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildLanguageItem(Language language) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white10,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white24),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                language.name,
-                style: GoogleFonts.orbitron(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: language.color,
-                ),
-              ),
-              Text(
-                '${(language.proficiency * 100).toInt()}%',
-                style: GoogleFonts.orbitron(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white70,
-                ),
-              ),
-            ],
+          Text(
+            'FrameWork',
+            style: GoogleFonts.orbitron(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
-          const SizedBox(height: 12),
-          LinearProgressIndicator(
-            value: language.proficiency,
-            backgroundColor: Colors.grey[800],
-            valueColor: AlwaysStoppedAnimation<Color>(language.color),
-            minHeight: 10,
-            borderRadius: BorderRadius.circular(5),
+          const SizedBox(height: 24),
+          Center(
+            child: Wrap(
+              spacing: 24.0,
+              runSpacing: 16.0,
+              alignment: WrapAlignment.center,
+              children: skillModels.entries.map((entry) {
+                final isHovering = _isHovering[entry.key] ?? false;
+                return MouseRegion(
+                  onEnter: (_) => setState(() => _isHovering[entry.key] = true),
+                  onExit: (_) => setState(() => _isHovering[entry.key] = false),
+                  cursor: SystemMouseCursors.click,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    transform: Matrix4.identity()..scale(isHovering ? 1.1 : 1.0),
+                    transformAlignment: Alignment.center,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 160,
+                          height: 160,
+                          child: ModelViewer(
+                            src: entry.key,
+                            alt: 'Logo 3D de ${entry.value}',
+                            autoRotate: isHovering,
+                            cameraControls: true,
+                            disableZoom: false,
+                            cameraOrbit: '30deg 75deg 1.2m',
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          entry.value,
+                          style: GoogleFonts.orbitron(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
     );
-  }
-}
+  }}

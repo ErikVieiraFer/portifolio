@@ -45,10 +45,11 @@ class Projects extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ProjectCard(
-            title: 'ChessJoin',
+            title: 'DaiAIlog',
             description:
-                'Aplicativo em construção para partidas de xadrez online, com foco em jogabilidade colaborativa. Visualização indisponível.',
-            githubUrl: 'https://github.com/igormidev/chessjoin',
+                ' O app usa a API do Google Gemini para gerar perguntas personalizadas, projetadas para facilitar o networking em eventos',
+            githubUrl: 'https://github.com/ErikVieiraFer/diailog',
+            githubPagesUrl: 'https://erikvieirafer.github.io/diailog/',
           ),
         ],
       ),

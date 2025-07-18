@@ -24,4 +24,10 @@ class CurriculumCubit extends Cubit<CurriculumState> {
       debugPrint('Erro no PDF: $e');
     }
   }
+
+  @override
+  Future<void> close() {
+    pdfController?.dispose();
+    return super.close();
+  }
 }
