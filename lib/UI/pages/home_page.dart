@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
                   child: const Projects(),
                 ),
                 const AboutMe(),
-                // Seção de Linguagens (sem o botão de currículo)
+                
                 MultiBlocProvider(
                   providers: [BlocProvider(create: (_) => LanguagesCubit())],
                   child: const Padding(
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                     child: LanguagesWidget(),
                   ),
                 ),
-                // Botão de Currículo reposicionado entre Linguagens e Contato
+                
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: BlocProvider(

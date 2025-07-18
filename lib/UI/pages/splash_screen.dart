@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Navegar para a página principal após a animação
+    
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen>
                 },
               ),
               const SizedBox(height: 50),
-              // Indicador de carregamento
+              
               AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) {
@@ -115,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen>
                 },
               ),
               const SizedBox(height: 20),
-              // Texto de carregamento
+              
               AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) {

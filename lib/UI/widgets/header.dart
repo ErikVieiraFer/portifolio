@@ -16,7 +16,7 @@ class _HeaderState extends State<Header> {
 
   Future<void> _scrollToProjects() async {
     await widget.scrollController.scrollToIndex(
-      1, // Índice da seção de projetos
+      1,
       duration: const Duration(milliseconds: 800),
       preferPosition: AutoScrollPosition.begin,
     );

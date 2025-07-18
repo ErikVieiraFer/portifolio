@@ -14,7 +14,7 @@ class CurriculumButton extends StatelessWidget {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ElevatedButton(
-        onPressed: _launchCurriculumUrl, // Chama a função para abrir o link
+        onPressed: _launchCurriculumUrl, 
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.amber,
           foregroundColor: Colors.black,

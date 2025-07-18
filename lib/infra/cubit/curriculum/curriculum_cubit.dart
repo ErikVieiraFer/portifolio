@@ -5,7 +5,6 @@ import 'curriculum_state.dart';
 
 class CurriculumCubit extends Cubit<CurriculumState> {
   PdfControllerPinch? pdfController;
-  // Removida a variável estática para permitir recarregamento
   Future<PdfDocument>? _documentFuture;
 
   CurriculumCubit() : super(CurriculumInitial()) {
@@ -15,7 +14,6 @@ class CurriculumCubit extends Cubit<CurriculumState> {
   Future<void> _loadPdf() async {
     emit(CurriculumLoading());
     try {
-      // Sempre carrega o documento, sem verificar se já foi carregado antes
       _documentFuture = PdfDocument.openAsset('assets/cv_erik.pdf');
       pdfController = PdfControllerPinch(document: _documentFuture!);
       emit(CurriculumReady());
