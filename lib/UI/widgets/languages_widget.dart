@@ -13,7 +13,7 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
   final Map<String, bool> _isHovering = {};
 
   final Map<String, String> skillModels = const {
-    'assets/models/flutter_logo.glb': 'Flutter',
+    'assets/assets/models/flutter_logo.glb': 'Flutter',
   };
 
   @override
