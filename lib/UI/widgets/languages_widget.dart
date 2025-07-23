@@ -56,19 +56,10 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: 160,
-                          height: 160,
-                          child: ModelViewer(
-                            src: entry.key,
-                            alt: 'Logo 3D de ${entry.value}',
-                            autoRotate: isHovering,
-                            cameraControls: true,
-                            disableZoom: false,
-                            cameraOrbit: '30deg 75deg 1.2m',
-                            backgroundColor: Colors.transparent,
-                          ),
-                        ),
+                        FlutterLogo(
+                          size: 150,
+                          style: FlutterLogoStyle.horizontal,
+                          textColor: Colors.white,),
                         const SizedBox(height: 8),
                         Text(
                           entry.value,
