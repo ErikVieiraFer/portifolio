@@ -57,55 +57,59 @@ class Contacts extends StatelessWidget {
   }
 }
 
-class ContactRow extends StatelessWidget {
+class ContactRow extends StatefulWidget {
   final IconData icon;
   final String label;
   final String value;
   final VoidCallback onTap;
 
-  const ContactRow({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.onTap,
-  });
+  const ContactRow(
+      {super.key,
+      required this.icon,
+      required this.label,
+      required this.value,
+      required this.onTap});
+
+  @override
+  State<ContactRow> createState() => _ContactRowState();
+}
+
+class _ContactRowState extends State<ContactRow> {
+  bool _isHovering = false;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      splashColor: const Color.fromARGB(113, 252, 81, 81),
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.white70),
-            const SizedBox(width: 12),
-            Text(
-              '$label: ',
-              style: GoogleFonts.orbitron(
-                fontSize: 16,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Expanded(
-              child: Text(
-                value,
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          decoration: BoxDecoration(
+            color: _isHovering ? Colors.redAccent.withAlpha(50) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Icon(widget.icon, color: Colors.white70),
+              const SizedBox(width: 12),
+              Text(
+                '${widget.label}: ',
                 style: GoogleFonts.orbitron(
                   fontSize: 16,
-                  color: Colors.white70,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.white70,
-            ),
-          ],
+              Expanded(
+                child: Text(widget.value, style: GoogleFonts.orbitron(fontSize: 16, color: Colors.white70)),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white70),
+            ],
+          ),
         ),
       ),
     );

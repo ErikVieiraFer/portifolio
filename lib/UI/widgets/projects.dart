@@ -57,7 +57,7 @@ class Projects extends StatelessWidget {
   }
 }
 
-class ProjectCard extends StatelessWidget {
+class ProjectCard extends StatefulWidget {
   final String title;
   final String description;
   final String? githubUrl;
@@ -72,22 +72,84 @@ class ProjectCard extends StatelessWidget {
   });
 
   @override
+  State<ProjectCard> createState() => _ProjectCardState();
+}
+
+class _ProjectCardState extends State<ProjectCard> {
+  bool _isHovering = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white10,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap:
-                githubUrl != null
-                    ? () async {
-                      final uri = Uri.parse(githubUrl!);
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _isHovering ? Colors.white12 : Colors.white10,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white24),
+          boxShadow: _isHovering
+              ? [
+                  BoxShadow(
+                    color: Colors.pinkAccent.withAlpha((255 * 0.3).round()),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  )
+                ]
+              : [],
+        ),
+        transform: Matrix4.identity()..scale(_isHovering ? 1.02 : 1.0),
+        transformAlignment: Alignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap:
+                  widget.githubUrl != null
+                      ? () async {
+                        final uri = Uri.parse(widget.githubUrl!);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(
+                            uri,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Não foi possível abrir o link do GitHub',
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      : null,
+              child: Text(
+                widget.title,
+                style: GoogleFonts.orbitron(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color:
+                      widget.githubUrl != null ? Colors.blueAccent : Colors.cyanAccent,
+                  decoration: widget.githubUrl != null ? TextDecoration.underline : null,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.description,
+              style: GoogleFonts.orbitron(fontSize: 14, color: Colors.white),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                if (widget.githubUrl != null) ...[
+                  TextButton(
+                    onPressed: () async {
+                      final uri = Uri.parse(widget.githubUrl!);
                       if (await canLaunchUrl(uri)) {
                         await launchUrl(
                           uri,
@@ -102,81 +164,43 @@ class ProjectCard extends StatelessWidget {
                           ),
                         );
                       }
-                    }
-                    : null,
-            child: Text(
-              title,
-              style: GoogleFonts.orbitron(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color:
-                    githubUrl != null ? Colors.blueAccent : Colors.cyanAccent,
-                decoration: githubUrl != null ? TextDecoration.underline : null,
-              ),
+                    },
+                    child: Text(
+                      'Ver no GitHub',
+                      style: GoogleFonts.orbitron(color: Colors.blueAccent),
+                    ),
+                  ),
+                ],
+                if (widget.githubPagesUrl != null) ...[
+                  const SizedBox(width: 16),
+                  TextButton(
+                    onPressed: () async {
+                    final uri = Uri.parse(widget.githubPagesUrl!);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Não foi possível abrir o link do GitHub Pages',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Ver Demo',
+                      style: GoogleFonts.orbitron(color: Colors.blueAccent),
+                    ),
+                  ),
+                ],
+              ],
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            description,
-            style: GoogleFonts.orbitron(fontSize: 14, color: Colors.white),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              if (githubUrl != null) ...[
-                TextButton(
-                  onPressed: () async {
-                    final uri = Uri.parse(githubUrl!);
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(
-                        uri,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Não foi possível abrir o link do GitHub',
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(
-                    'Ver no GitHub',
-                    style: GoogleFonts.orbitron(color: Colors.blueAccent),
-                  ),
-                ),
-              ],
-              if (githubPagesUrl != null) ...[
-                const SizedBox(width: 16),
-                TextButton(
-                  onPressed: () async {
-                    final uri = Uri.parse(githubPagesUrl!);
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(
-                        uri,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Não foi possível abrir o link do GitHub Pages',
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(
-                    'Ver Demo',
-                    style: GoogleFonts.orbitron(color: Colors.blueAccent),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

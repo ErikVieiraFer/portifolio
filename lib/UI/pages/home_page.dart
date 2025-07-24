@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:portfolio_flutter/UI/widgets/about_me.dart';
 import 'package:portfolio_flutter/UI/widgets/contacts.dart';
 import 'package:portfolio_flutter/UI/widgets/curriculum_button.dart';
@@ -57,26 +58,41 @@ class _HomePageState extends State<HomePage> {
                   key: const ValueKey(1),
                   controller: _scrollController,
                   index: 1,
-                  child: const Projects(),
+                  child: Projects().animate().fade(
+                        duration: 600.ms,
+                        delay: 200.ms,
+                      ).slide(begin: const Offset(0, 0.2)),
                 ),
-                const AboutMe(),
-                
+                AboutMe().animate().fade(
+                      duration: 600.ms,
+                      delay: 400.ms,
+                    ).slide(begin: const Offset(-0.2, 0)),
+
                 MultiBlocProvider(
                   providers: [BlocProvider(create: (_) => LanguagesCubit())],
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(16),
-                    child: LanguagesWidget(),
-                  ),
+                    child: const LanguagesWidget(),
+                  ).animate().fade(
+                        duration: 600.ms,
+                        delay: 200.ms,
+                      ).slide(begin: const Offset(0, 0.2)),
                 ),
-                
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: BlocProvider(
                     create: (_) => CurriculumCubit(),
                     child: const CurriculumButton(),
-                  ),
+                  ).animate().fade(
+                        duration: 600.ms,
+                        delay: 400.ms,
+                      ).slide(begin: const Offset(0.2, 0)),
                 ),
-                const Contacts(),
+                const Contacts().animate().fade(
+                      duration: 600.ms,
+                      delay: 200.ms,
+                    ).slide(begin: const Offset(0, 0.2)),
               ],
             ),
           ),
