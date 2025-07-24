@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio_flutter/core/constants/app_colors.dart';
+import 'package:portfolio_flutter/UI/widgets/hover_animated_title.dart';
 
 class AboutMe extends StatefulWidget {
   const AboutMe({super.key});
@@ -44,7 +45,11 @@ class _AboutMeState extends State<AboutMe> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Sobre Mim', style: Theme.of(context).textTheme.displayLarge),
+              HoverAnimatedTitle(
+                title: 'Sobre Mim',
+                isHovering: _isHovering,
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
               const SizedBox(height: 12),
               Text(
                 'Desenvolvedor com foco em Flutter e mentalidade full-stack. Minha paixão é transformar ideias em software de alta qualidade, aplicando princípios de Clean Architecture e S.O.L.I.D. para criar soluções robustas, escaláveis e de fácil manutenção. Uno a excelência técnica com uma forte disciplina de processos para entregar resultados que geram valor real.',

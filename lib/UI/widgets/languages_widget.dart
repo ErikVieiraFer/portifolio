@@ -1,6 +1,7 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:portfolio_flutter/UI/widgets/hover_animated_title.dart';
 class LanguagesWidget extends StatefulWidget {
   const LanguagesWidget({super.key});
   @override
@@ -22,49 +23,55 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
 
   
   final Map<String, bool> _isHovering = {};
+  bool _isCardHovering = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(0, 0, 0, 0.4),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.cyanAccent, width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Habilidades & Frameworks',
-            style: GoogleFonts.orbitron(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isCardHovering = true),
+      onExit: (_) => setState(() => _isCardHovering = false),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          color: const Color.fromRGBO(0, 0, 0, 0.4),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.cyanAccent, width: 2),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            HoverAnimatedTitle(
+              title: 'Habilidades & Frameworks',
+              isHovering: _isCardHovering,
+              style: GoogleFonts.orbitron(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
+            const SizedBox(height: 32),
 
-          
-          Center(child: _buildSkillWidget(mainSkillIcon, mainSkillName, isPrimary: true)),
-          
-          
+            
+            Center(child: _buildSkillWidget(mainSkillIcon, mainSkillName, isPrimary: true)),
+            
+            
 
-          const SizedBox(height: 40), 
+            const SizedBox(height: 40), 
 
-          
-          Center(
-            child: Wrap(
-              spacing: 48.0,
-              runSpacing: 32.0,
-              alignment: WrapAlignment.center,
-              children: secondarySkills.entries
-                  .map((entry) => _buildSkillWidget(entry.key, entry.value, isPrimary: false))
-                  .toList(),
+            
+            Center(
+              child: Wrap(
+                spacing: 48.0,
+                runSpacing: 32.0,
+                alignment: WrapAlignment.center,
+                children: secondarySkills.entries
+                    .map((entry) => _buildSkillWidget(entry.key, entry.value, isPrimary: false))
+                    .toList(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

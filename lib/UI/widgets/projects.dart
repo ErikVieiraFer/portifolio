@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:portfolio_flutter/UI/widgets/hover_animated_title.dart';
 
 class Projects extends StatelessWidget {
   const Projects({super.key});
@@ -127,14 +128,18 @@ class _ProjectCardState extends State<ProjectCard> {
                         }
                       }
                       : null,
-              child: Text(
-                widget.title,
+              child: HoverAnimatedTitle(
+                title: widget.title,
+                isHovering: _isHovering,
                 style: GoogleFonts.orbitron(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color:
-                      widget.githubUrl != null ? Colors.blueAccent : Colors.cyanAccent,
-                  decoration: widget.githubUrl != null ? TextDecoration.underline : null,
+                  color: widget.githubUrl != null
+                      ? Colors.blueAccent
+                      : Colors.cyanAccent,
+                  decoration: widget.githubUrl != null
+                      ? TextDecoration.underline
+                      : null,
                 ),
               ),
             ),
