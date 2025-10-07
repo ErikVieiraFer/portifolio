@@ -20,6 +20,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AutoScrollController _scrollController = AutoScrollController();
+  bool _showBackToTop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      final showButton = _scrollController.offset > 400;
+      if (showButton != _showBackToTop) {
+        setState(() => _showBackToTop = showButton);
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -33,6 +45,17 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+      floatingActionButton: _showBackToTop
+          ? FloatingActionButton(
+              onPressed: () => _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.easeInOut,
+              ),
+              backgroundColor: Colors.pinkAccent,
+              child: const Icon(Icons.arrow_upward, color: Colors.white),
+            )
+          : null,
       body: Stack(
         children: [
           Container(
@@ -48,52 +71,54 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          SingleChildScrollView(
-            controller: _scrollController,
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                Header(scrollController: _scrollController),
-                AutoScrollTag(
-                  key: const ValueKey(1),
-                  controller: _scrollController,
-                  index: 1,
-                  child: Projects().animate().fade(
-                        duration: 600.ms,
-                        delay: 200.ms,
-                      ).slide(begin: const Offset(0, 0.2)),
-                ),
-                AboutMe().animate().fade(
-                      duration: 600.ms,
-                      delay: 400.ms,
-                    ).slide(begin: const Offset(-0.2, 0)),
-
-                MultiBlocProvider(
-                  providers: [BlocProvider(create: (_) => LanguagesCubit())],
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: const LanguagesWidget(),
-                  ).animate().fade(
-                        duration: 600.ms,
-                        delay: 200.ms,
-                      ).slide(begin: const Offset(0, 0.2)),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: BlocProvider(
-                    create: (_) => CurriculumCubit(),
-                    child: const CurriculumButton(),
-                  ).animate().fade(
+          SafeArea(
+            bottom: true,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  Header(scrollController: _scrollController),
+                  AutoScrollTag(
+                    key: const ValueKey(1),
+                    controller: _scrollController,
+                    index: 1,
+                    child: const Projects().animate().fade(
+                          duration: 600.ms,
+                          delay: 200.ms,
+                        ).slide(begin: const Offset(0, 0.2)),
+                  ),
+                  const AboutMe().animate().fade(
                         duration: 600.ms,
                         delay: 400.ms,
-                      ).slide(begin: const Offset(0.2, 0)),
-                ),
-                const Contacts().animate().fade(
-                      duration: 600.ms,
-                      delay: 200.ms,
-                    ).slide(begin: const Offset(0, 0.2)),
-              ],
+                      ).slide(begin: const Offset(-0.2, 0)),
+                  MultiBlocProvider(
+                    providers: [BlocProvider(create: (_) => LanguagesCubit())],
+                    child: const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: LanguagesWidget(),
+                    ).animate().fade(
+                          duration: 600.ms,
+                          delay: 200.ms,
+                        ).slide(begin: const Offset(0, 0.2)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: BlocProvider(
+                      create: (_) => CurriculumCubit(),
+                      child: const CurriculumButton(),
+                    ).animate().fade(
+                          duration: 600.ms,
+                          delay: 400.ms,
+                        ).slide(begin: const Offset(0.2, 0)),
+                  ),
+                  const Contacts().animate().fade(
+                        duration: 600.ms,
+                        delay: 200.ms,
+                      ).slide(begin: const Offset(0, 0.2)),
+                  const SizedBox(height: 40),
+                ],
+              ),
             ),
           ),
         ],

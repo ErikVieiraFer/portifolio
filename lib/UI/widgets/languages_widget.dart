@@ -2,18 +2,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio_flutter/UI/widgets/hover_animated_title.dart';
+import 'package:portfolio_flutter/core/constants/app_strings.dart';
+
 class LanguagesWidget extends StatefulWidget {
   const LanguagesWidget({super.key});
+
   @override
   State<LanguagesWidget> createState() => _LanguagesWidgetState();
 }
 
 class _LanguagesWidgetState extends State<LanguagesWidget> {
-  
   final String mainSkillIcon = 'assets/icons/flutter.svg';
   final String mainSkillName = 'Flutter';
 
-  
   final Map<String, String> secondarySkills = const {
     'assets/icons/python.svg': 'Python',
     'assets/icons/html5.svg': 'HTML5',
@@ -21,7 +22,6 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
     'assets/icons/javascript.svg': 'JavaScript',
   };
 
-  
   final Map<String, bool> _isHovering = {};
   bool _isCardHovering = false;
 
@@ -42,7 +42,7 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HoverAnimatedTitle(
-              title: 'Habilidades & Frameworks',
+              title: AppStrings.skillsTitle,
               isHovering: _isCardHovering,
               style: GoogleFonts.orbitron(
                 fontSize: 28,
@@ -51,22 +51,18 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
               ),
             ),
             const SizedBox(height: 32),
-
-            
-            Center(child: _buildSkillWidget(mainSkillIcon, mainSkillName, isPrimary: true)),
-            
-            
-
-            const SizedBox(height: 40), 
-
-            
+            Center(
+                child: _buildSkillWidget(mainSkillIcon, mainSkillName,
+                    isPrimary: true)),
+            const SizedBox(height: 40),
             Center(
               child: Wrap(
                 spacing: 48.0,
                 runSpacing: 32.0,
                 alignment: WrapAlignment.center,
                 children: secondarySkills.entries
-                    .map((entry) => _buildSkillWidget(entry.key, entry.value, isPrimary: false))
+                    .map((entry) => _buildSkillWidget(entry.key, entry.value,
+                        isPrimary: false))
                     .toList(),
               ),
             ),
@@ -76,22 +72,19 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
     );
   }
 
-  
-  Widget _buildSkillWidget(String iconPath, String name, {bool isPrimary = false}) {
+  Widget _buildSkillWidget(String iconPath, String name,
+      {bool isPrimary = false}) {
     final bool isHovering = _isHovering[iconPath] ?? false;
     final double iconSize = isPrimary ? 120.0 : 70.0;
     final double fontSize = isPrimary ? 22.0 : 16.0;
 
-    
     ColorFilter? iconColorFilter;
     if (isPrimary) {
-      
-      iconColorFilter = const ColorFilter.mode(Colors.cyanAccent, BlendMode.srcIn);
+      iconColorFilter =
+          const ColorFilter.mode(Colors.cyanAccent, BlendMode.srcIn);
     } else if (!isHovering) {
-      
       iconColorFilter = const ColorFilter.mode(Colors.grey, BlendMode.srcIn);
     }
-    
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovering[iconPath] = true),
@@ -126,7 +119,6 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
               child: SvgPicture.asset(
                 iconPath,
                 semanticsLabel: 'Logo de $name',
-                
                 colorFilter: iconColorFilter,
               ),
             ),

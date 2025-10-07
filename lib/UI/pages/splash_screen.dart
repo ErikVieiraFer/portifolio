@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio_flutter/UI/pages/home_page.dart';
+import 'package:portfolio_flutter/core/constants/app_strings.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,6 +14,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  String _loadingText = AppStrings.loading;
 
   @override
   void initState() {
@@ -28,8 +30,8 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.forward();
+    _simulateLoading();
 
-    
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -51,6 +53,17 @@ class _SplashScreenState extends State<SplashScreen>
         });
       }
     });
+  }
+
+  Future<void> _simulateLoading() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (mounted) setState(() => _loadingText = AppStrings.loadingResources);
+
+    await Future.delayed(const Duration(milliseconds: 1200));
+    if (mounted) setState(() => _loadingText = AppStrings.almostThere);
+
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (mounted) setState(() => _loadingText = AppStrings.ready);
   }
 
   @override
@@ -85,7 +98,8 @@ class _SplashScreenState extends State<SplashScreen>
                   return Opacity(
                     opacity: _animation.value,
                     child: Text(
-                      'BEM VINDO AO MEU PORTIFÓLIO',
+                      AppStrings.welcomeMessage,
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.pressStart2p(
                         fontSize: 18,
                         color: const Color.fromARGB(255, 233, 77, 30),
@@ -95,7 +109,6 @@ class _SplashScreenState extends State<SplashScreen>
                 },
               ),
               const SizedBox(height: 50),
-              
               AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) {
@@ -115,14 +128,13 @@ class _SplashScreenState extends State<SplashScreen>
                 },
               ),
               const SizedBox(height: 20),
-              
               AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) {
                   return Opacity(
                     opacity: _animation.value,
                     child: Text(
-                      'Carregando...',
+                      _loadingText,
                       style: GoogleFonts.orbitron(
                         fontSize: 14,
                         color: Colors.white70,

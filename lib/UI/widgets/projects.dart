@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:portfolio_flutter/core/constants/app_strings.dart';
 
 class Project {
   final String title;
@@ -10,6 +11,7 @@ class Project {
   final String? githubUrl;
   final String? demoUrl;
   final bool isDraft;
+  final List<String> techs;
 
   Project({
     required this.title,
@@ -18,6 +20,7 @@ class Project {
     this.githubUrl,
     this.demoUrl,
     this.isDraft = false,
+    this.techs = const [],
   });
 }
 
@@ -29,6 +32,7 @@ final projectsList = [
     imagePath: 'assets/images/projects/techtaste.jpeg',
     githubUrl: 'https://github.com/ErikVieiraFer/TechTaste',
     demoUrl: 'https://erikvieirafer.github.io/TechTaste/',
+    techs: ['Flutter', 'Google Maps', 'Firebase', 'BLoC'],
   ),
   Project(
     title: 'DaiAIlog',
@@ -37,6 +41,7 @@ final projectsList = [
     imagePath: 'assets/images/projects/diailog.jpeg',
     githubUrl: 'https://github.com/ErikVieiraFer/diailog',
     demoUrl: 'https://erikvieirafer.github.io/diailog/',
+    techs: ['Flutter', 'Gemini AI', 'Material Design'],
   ),
   Project(
     title: 'Calculadora de IMC',
@@ -45,6 +50,7 @@ final projectsList = [
     imagePath: 'assets/images/projects/bmicalculator.jpeg',
     githubUrl: 'https://github.com/ErikVieiraFer/imc_state_manager',
     demoUrl: 'https://erikvieirafer.github.io/imc_state_manager/',
+    techs: ['Flutter', 'State Management', 'Responsive'],
   ),
   Project(
     title: 'Site do Grupo Resiliência',
@@ -52,6 +58,7 @@ final projectsList = [
         'Site institucional para o Grupo Resiliência, que oferece apoio e orientação a famílias, conectando dependentes químicos à clínica de reabilitação ideal para sua jornada de recuperação e superação.',
     imagePath: 'assets/images/projects/site-resiliencia.jpeg',
     demoUrl: 'https://fsresiliencia.com.br/',
+    techs: ['HTML', 'CSS', 'JavaScript'],
   ),
   Project(
     title: 'EasyWheight',
@@ -59,6 +66,7 @@ final projectsList = [
         'Aplicativo de controle de estoque desenvolvido para a Conquant Inteligencia Economica,  Permite o registo de produtos offline, com captura automática das informações dos produtos via balanças Bluetooth. Os dados são sincronizados com um servidor central (Python/Django) quando online, garantindo controlo total do estoque.',
     imagePath: 'assets/images/projects/easyweigh.jpeg',
     isDraft: true,
+    techs: ['Flutter', 'Python', 'Django', 'Bluetooth', 'SQLite'],
   ),
 ];
 
@@ -79,7 +87,7 @@ class Projects extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Projetos',
+            AppStrings.projectsTitle,
             style: GoogleFonts.orbitron(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -114,6 +122,7 @@ class ProjectCard extends StatefulWidget {
 
 class _ProjectCardState extends State<ProjectCard> {
   bool _isHovering = false;
+  bool _imageLoaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -122,23 +131,33 @@ class _ProjectCardState extends State<ProjectCard> {
       onExit: (_) => setState(() => _isHovering = false),
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
         width: 380,
-        height: _isHovering ? 420 : 400,
+        height: _isHovering ? 450 : 430,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.white10,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white24),
+          border: Border.all(
+            color: _isHovering ? Colors.pinkAccent : Colors.white24,
+            width: _isHovering ? 2 : 1,
+          ),
           boxShadow: _isHovering
               ? [
                   BoxShadow(
                     color: Colors.pinkAccent.withAlpha((255 * 0.4).round()),
-                    blurRadius: 12,
+                    blurRadius: 20,
                     spreadRadius: 4,
                   )
                 ]
-              : [],
+              : [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(50),
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  )
+                ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,6 +175,31 @@ class _ProjectCardState extends State<ProjectCard> {
                         widget.project.imagePath,
                         width: double.infinity,
                         fit: BoxFit.contain,
+                        frameBuilder: (context, child, frame,
+                            wasSynchronouslyLoaded) {
+                          if (wasSynchronouslyLoaded) {
+                            _imageLoaded = true;
+                            return child;
+                          }
+                          if (frame != null && !_imageLoaded) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted) {
+                                setState(() => _imageLoaded = true);
+                              }
+                            });
+                          }
+                          return Stack(
+                            children: [
+                              child,
+                              if (!_imageLoaded)
+                                const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.pinkAccent,
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                     AnimatedOpacity(
@@ -163,7 +207,16 @@ class _ProjectCardState extends State<ProjectCard> {
                       opacity: _isHovering ? 1.0 : 0.0,
                       child: Container(
                         width: double.infinity,
-                        color: Colors.black.withOpacity(0.75),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.85),
+                            ],
+                          ),
+                        ),
                         padding: const EdgeInsets.all(12.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -172,7 +225,7 @@ class _ProjectCardState extends State<ProjectCard> {
                             if (widget.project.isDraft)
                               Chip(
                                 label: Text(
-                                  'Em desenvolvimento',
+                                  AppStrings.inDevelopment,
                                   style: GoogleFonts.orbitron(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
@@ -181,22 +234,25 @@ class _ProjectCardState extends State<ProjectCard> {
                                     Colors.pinkAccent.withOpacity(0.8),
                               )
                             else
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              Wrap(
+                                spacing: 12,
+                                runSpacing: 8,
+                                alignment: WrapAlignment.center,
                                 children: [
                                   if (widget.project.demoUrl != null)
-                                    ElevatedButton(
+                                    ElevatedButton.icon(
                                       onPressed: () =>
                                           _launchUrl(widget.project.demoUrl!),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.pinkAccent,
                                         foregroundColor: Colors.white,
+                                        elevation: 5,
+                                        shadowColor:
+                                            Colors.pinkAccent.withOpacity(0.5),
                                       ),
-                                      child: const Text('Demo'),
+                                      icon: const Icon(Icons.launch, size: 16),
+                                      label: Text(AppStrings.demoButton),
                                     ),
-                                  if (widget.project.githubUrl != null &&
-                                      widget.project.demoUrl != null)
-                                    const SizedBox(width: 12),
                                   if (widget.project.githubUrl != null)
                                     ElevatedButton.icon(
                                       onPressed: () => _launchUrl(
@@ -204,10 +260,13 @@ class _ProjectCardState extends State<ProjectCard> {
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.blueAccent,
                                         foregroundColor: Colors.white,
+                                        elevation: 5,
+                                        shadowColor:
+                                            Colors.blueAccent.withOpacity(0.5),
                                       ),
                                       icon: const Icon(FontAwesomeIcons.github,
                                           size: 16),
-                                      label: const Text('Github'),
+                                      label: Text(AppStrings.githubButton),
                                     ),
                                 ],
                               ),
@@ -222,28 +281,62 @@ class _ProjectCardState extends State<ProjectCard> {
             const SizedBox(height: 12),
             Expanded(
               flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.project.title,
-                    style: GoogleFonts.orbitron(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: Text(
-                      widget.project.description,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Badges de tecnologias
+                    if (widget.project.techs.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children: widget.project.techs
+                              .map(
+                                (tech) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.cyan.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(
+                                        color: Colors.cyan.withOpacity(0.5)),
+                                  ),
+                                  child: Text(
+                                    tech,
+                                    style: GoogleFonts.orbitron(
+                                      fontSize: 10,
+                                      color: Colors.cyanAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    Text(
+                      widget.project.title,
                       style: GoogleFonts.orbitron(
-                          fontSize: 14, color: Colors.white70),
-                      textAlign: TextAlign.justify,
-                      overflow: TextOverflow.fade,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: Text(
+                        widget.project.description,
+                        style: GoogleFonts.orbitron(
+                            fontSize: 14, color: Colors.white70),
+                        textAlign: TextAlign.justify,
+                        overflow: TextOverflow.fade,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -257,7 +350,11 @@ class _ProjectCardState extends State<ProjectCard> {
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Não foi possível abrir o link: $url')),
+          SnackBar(
+            content: Text('Não foi possível abrir o link: $url'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     }

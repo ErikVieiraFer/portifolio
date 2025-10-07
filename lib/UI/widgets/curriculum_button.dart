@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:portfolio_flutter/core/constants/app_strings.dart';
 
 class CurriculumButton extends StatefulWidget {
   const CurriculumButton({super.key});
@@ -42,10 +43,11 @@ class _CurriculumButtonState extends State<CurriculumButton> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.article_outlined, color: Colors.black, size: 28),
+                const Icon(Icons.article_outlined,
+                    color: Colors.black, size: 28),
                 const SizedBox(width: 12),
                 Text(
-                  'Currículo',
+                  AppStrings.curriculumButton,
                   style: GoogleFonts.orbitron(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -61,7 +63,15 @@ class _CurriculumButtonState extends State<CurriculumButton> {
 
   Future<void> _launchCurriculumUrl() async {
     if (!await launchUrl(_curriculumUrl)) {
-      throw 'Could not launch $_curriculumUrl';
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Não foi possível abrir o currículo'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 }
