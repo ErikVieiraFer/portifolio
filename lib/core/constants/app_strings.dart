@@ -41,4 +41,34 @@ class AppStrings {
   // Messages
   static const urlError = 'Não foi possível abrir o link';
   static const clickToAccess = 'Clique para acessar';
+
+  // Budget Form
+  static const budgetFormTitle = 'Solicitar Orçamento';
+  static const budgetFormSubtitle = 'Vamos transformar sua ideia em realidade';
+  static const budgetButton = 'Solicitar Orçamento';
+  
+  // Form Fields
+  static const nameLabel = 'Nome Completo';
+  static const nameHint = 'Digite seu nome';
+  static const emailHint = 'Digite seu email';
+  static const projectTypeLabel = 'Tipo de Projeto';
+  static const projectTypeHint = 'Selecione o tipo de projeto';
+  static const budgetRangeLabel = 'Orçamento Estimado';
+  static const budgetRangeHint = 'Selecione uma faixa de orçamento';
+  static const descriptionLabel = 'Descrição do Projeto';
+  static const descriptionHint = 'Descreva seu projeto, funcionalidades desejadas, prazo, etc.';
+  
+  // Form Actions
+  static const sendButton = 'Enviar Solicitação';
+  static const cancelButton = 'Cancelar';
+  static const closeButton = 'Fechar';
+  
+  // Form Status
+  static const sendingBudget = 'Enviando...';
+  static const budgetSuccess = 'Solicitação enviada com sucesso!';
+  static const budgetSuccessMessage = 
+      'Obrigado pelo contato! Vou analisar seu projeto e retornar em breve.';
+  static const budgetError = 'Erro ao enviar';
+  static const budgetErrorMessage = 
+      'Não foi possível enviar sua solicitação. Tente novamente ou entre em contato diretamente.';
 }
