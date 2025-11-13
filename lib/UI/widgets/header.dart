@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -19,16 +18,6 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header> {
-  Offset _mousePosition = Offset.zero;
-
-  Future<void> _scrollToProjects() async {
-    await widget.scrollController.scrollToIndex(
-      1,
-      duration: const Duration(milliseconds: 800),
-      preferPosition: AutoScrollPosition.begin,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeState>(
@@ -37,40 +26,10 @@ class _HeaderState extends State<Header> {
         final size = MediaQuery.of(context).size;
         final isMobile = size.width < 600;
 
-        return MouseRegion(
-          onHover: (event) {
-            setState(() => _mousePosition = event.position);
-          },
-          child: Container(
-            height: isMobile ? 500 : 700,
-            padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 100),
-            child: Stack(
-              children: [
-                // Blur que segue o mouse (apenas desktop)
-                if (!isMobile)
-                  Positioned(
-                    left: _mousePosition.dx - 150,
-                    top: _mousePosition.dy - 150,
-                    child: Container(
-                      width: 300,
-                      height: 300,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            colors.secondary.withAlpha(38),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                // Layout principal
-                isMobile ? _buildMobileLayout(colors, isMobile) : _buildDesktopLayout(colors, isMobile),
-              ],
-            ),
-          ),
+        return Container(
+          height: isMobile ? 500 : 650,
+          padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 60),
+          child: isMobile ? _buildMobileLayout(colors, isMobile) : _buildDesktopLayout(colors, isMobile),
         );
       },
     );
@@ -83,8 +42,6 @@ class _HeaderState extends State<Header> {
         _buildCharacterImage(colors, isMobile),
         const SizedBox(height: 30),
         _buildNameSection(colors, isMobile),
-        const SizedBox(height: 20),
-        _buildScrollButton(colors),
       ],
     );
   }
@@ -92,49 +49,55 @@ class _HeaderState extends State<Header> {
   Widget _buildDesktopLayout(colors, bool isMobile) {
     return Row(
       children: [
-        // PERSONAGEM (esquerda) - MAIOR
+        // PERSONAGEM (esquerda) - MENOR e mais à esquerda
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Stack(
-            alignment: Alignment.center,
+            alignment: Alignment.centerLeft, // Alinha à esquerda
             children: [
-              // Blur concentrado no personagem
-              Container(
-                width: 550,
-                height: 550,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: colors.glow,
-                      blurRadius: 80,
-                      spreadRadius: 30,
-                    ),
-                  ],
+              // Blur MENOR e concentrado
+              Positioned(
+                left: isMobile ? 50 : 150, // AJUSTADO
+                child: Container(
+                  width: 400, // MENOR (era 550)
+                  height: 400,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: colors.glow,
+                        blurRadius: 60, // MENOR (era 80)
+                        spreadRadius: 15, // MENOR (era 30)
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              // Imagem com cantos arredondados
-              ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: Image.asset(
-                  'assets/images/hero_character.png',
-                  height: 600,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 600,
-                      decoration: BoxDecoration(
-                        color: colors.cardBackground,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: colors.border, width: 2),
-                      ),
-                      child: Icon(
-                        Icons.person,
-                        size: 300,
-                        color: colors.primary,
-                      ),
-                    );
-                  },
+              // Imagem mais à direita
+              Positioned(
+                left: isMobile ? 30 : 120, // AJUSTADO (era 0)
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Image.asset(
+                    'assets/images/hero_character.png',
+                    height: 550, // MENOR (era 600)
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 550,
+                        decoration: BoxDecoration(
+                          color: colors.cardBackground,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: colors.border, width: 2),
+                        ),
+                        child: Icon(
+                          Icons.person,
+                          size: 300,
+                          color: colors.primary,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -142,37 +105,37 @@ class _HeaderState extends State<Header> {
               .fadeIn(duration: 800.ms)
               .slideX(begin: -0.3, end: 0, duration: 800.ms),
         ),
-        const SizedBox(width: 80),
-        // NOME + BOTÃO (direita)
+        const SizedBox(width: 40),
+        // NOME + BOTÃO (direita) - MAIS ESPAÇO
         Expanded(
-          flex: 1,
+          flex: 2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Nome com animação de digitação
-              SizedBox(
-                width: 500,
+              DefaultTextStyle(
+                style: GoogleFonts.orbitron(
+                  fontSize: 56,
+                  fontWeight: FontWeight.bold,
+                  color: colors.accent,
+                  shadows: [
+                    Shadow(
+                      color: colors.glow,
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
                 child: AnimatedTextKit(
+                  isRepeatingAnimation: true, // Loop infinito
+                  repeatForever: true,
+                  pause: const Duration(milliseconds: 2000),
                   animatedTexts: [
                     TypewriterAnimatedText(
                       AppStrings.developerName,
-                      textStyle: GoogleFonts.orbitron(
-                        fontSize: 56,
-                        fontWeight: FontWeight.bold,
-                        color: colors.accent,
-                        shadows: [
-                          Shadow(
-                            color: colors.glow,
-                            blurRadius: 20,
-                          ),
-                        ],
-                      ),
                       speed: const Duration(milliseconds: 100),
                     ),
                   ],
-                  isRepeatingAnimation: false, // Só uma vez
-                  pause: const Duration(milliseconds: 500),
                 ),
               ),
               const SizedBox(height: 20),
@@ -181,15 +144,10 @@ class _HeaderState extends State<Header> {
                 AppStrings.developerTitle,
                 style: GoogleFonts.orbitron(
                   fontSize: 24,
-                  fontWeight: FontWeight.w600, // Mais grosso
+                  fontWeight: FontWeight.w600,
                   color: colors.secondary,
-                  letterSpacing: 3,
+                  letterSpacing: 2,
                 ),
-              ),
-              const SizedBox(height: 60),
-              // Botão scroll centralizado
-              Center(
-                child: _buildScrollButton(colors),
               ),
             ],
           ).animate()
@@ -251,28 +209,28 @@ class _HeaderState extends State<Header> {
     return Column(
       crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: isMobile ? 300 : 500,
+        DefaultTextStyle(
+          style: GoogleFonts.orbitron(
+            fontSize: isMobile ? 32 : 56,
+            fontWeight: FontWeight.bold,
+            color: colors.accent,
+            shadows: [
+              Shadow(
+                color: colors.glow,
+                blurRadius: 20,
+              ),
+            ],
+          ),
           child: AnimatedTextKit(
+            isRepeatingAnimation: true, // Loop infinito
+            repeatForever: true,
+            pause: const Duration(milliseconds: 2000),
             animatedTexts: [
               TypewriterAnimatedText(
                 AppStrings.developerName,
-                textStyle: GoogleFonts.orbitron(
-                  fontSize: isMobile ? 32 : 56,
-                  fontWeight: FontWeight.bold,
-                  color: colors.accent,
-                  shadows: [
-                    Shadow(
-                      color: colors.glow,
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
                 speed: const Duration(milliseconds: 100),
               ),
             ],
-            isRepeatingAnimation: false, // Só uma vez
-            pause: const Duration(milliseconds: 500),
           ),
         ),
         const SizedBox(height: 20),
@@ -282,49 +240,11 @@ class _HeaderState extends State<Header> {
             fontSize: isMobile ? 16 : 24,
             fontWeight: FontWeight.w600,
             color: colors.secondary,
-            letterSpacing: 3,
+            letterSpacing: 2,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildScrollButton(colors) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: _scrollToProjects,
-        child: Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent, // Garantir transparência
-            border: Border.all(color: colors.accent, width: 3),
-            boxShadow: [
-              BoxShadow(
-                color: colors.accent.withAlpha(127),
-                blurRadius: 15,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Icon(
-              Icons.keyboard_arrow_down,
-              color: colors.accent,
-              size: 36,
-            ),
-          ),
-        ).animate(
-          onPlay: (controller) => controller.repeat(reverse: true),
-        ).moveY(
-          begin: 0,
-          end: 10,
-          duration: 1500.ms,
-          curve: Curves.easeInOut,
-        ),
-      ),
-    );
-  }
 }

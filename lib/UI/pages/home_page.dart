@@ -9,7 +9,6 @@ import 'package:portfolio_flutter/UI/widgets/budget_button.dart';
 import 'package:portfolio_flutter/UI/widgets/tech_carousel.dart';
 import 'package:portfolio_flutter/UI/widgets/theme_switcher.dart';
 import 'package:portfolio_flutter/UI/widgets/particle_background.dart';
-import 'package:portfolio_flutter/UI/widgets/spotlight_effect.dart';
 import 'package:portfolio_flutter/core/theme/theme_colors.dart';
 import 'package:portfolio_flutter/infra/cubit/theme/theme_cubit.dart';
 import 'package:portfolio_flutter/infra/cubit/theme/theme_state.dart';
@@ -25,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final AutoScrollController _scrollController = AutoScrollController();
   bool _showBackToTop = false;
+  Offset _mousePosition = Offset.zero;
 
   @override
   void initState() {
@@ -64,11 +64,37 @@ class _HomePageState extends State<HomePage> {
               const Positioned.fill(
                 child: ParticleBackground(),
               ),
-              // CAMADA 3: Efeito de Luz do Mouse
-              const Positioned.fill(
-                child: SpotlightEffect(),
+              // CAMADA 3: Mouse Region para capturar movimento
+              Positioned.fill(
+                child: MouseRegion(
+                  onHover: (event) {
+                    setState(() {
+                      _mousePosition = event.position;
+                    });
+                  },
+                  child: const SizedBox.expand(),
+                ),
               ),
-              // CAMADA 4: Conteúdo Rolável
+              // CAMADA 4: Blur que segue o mouse (página inteira)
+              if (_mousePosition != Offset.zero)
+                Positioned(
+                  left: _mousePosition.dx - 150,
+                  top: _mousePosition.dy - 150,
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          colors.secondary.withAlpha(38),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              // CAMADA 5: Conteúdo Rolável
               SingleChildScrollView(
                 controller: _scrollController,
                 physics: const ClampingScrollPhysics(),
@@ -108,30 +134,35 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              // CAMADA 5: Botão de Tema Flutuante (Canto Superior Direito)
+              // CAMADA 6: Botão de Tema Flutuante (Canto Superior Direito)
               Positioned(
-                top: 50, // Espaço para status bar
+                top: 20,
                 right: 20,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withAlpha(180),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: colors.border,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colors.glow,
-                        blurRadius: 15,
-                        spreadRadius: 2,
+                child: Material(
+                  elevation: 10,
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.transparent,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(200), // Mais opaco
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: colors.border,
+                        width: 2,
                       ),
-                    ],
+                      boxShadow: [
+                        BoxShadow(
+                          color: colors.glow,
+                          blurRadius: 20,
+                          spreadRadius: 3,
+                        ),
+                      ],
+                    ),
+                    child: const ThemeSwitcherDropdown(),
                   ),
-                  child: const ThemeSwitcherDropdown(),
                 ),
               ),
-              // CAMADA 6: Botão Voltar ao Topo (Canto Inferior Direito)
+              // CAMADA 7: Botão Voltar ao Topo (Canto Inferior Direito)
               if (_showBackToTop)
                 Positioned(
                   bottom: 20,

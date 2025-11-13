@@ -38,7 +38,7 @@ class ThemeColors {
   static const cyberpunk = ThemeColors(
     primary: Color(0xFFFF4081), // Rosa neon
     secondary: Color(0xFF00E5FF), // Cyan
-    accent: Color(0xFFFFEB3B), // Amarelo
+    accent: Color(0xFFFF8C42), // Laranja (mudado de amarelo FFEB3B)
     background: Color(0xFF000000),
     backgroundSecondary: Color(0xFF0A0A0A),
     cardBackground: Color(0x66000000), // transparentBlack
@@ -84,7 +84,7 @@ class ThemeColors {
   static const sunset = ThemeColors(
     primary: Color(0xFFFF6B35), // Laranja vibrante
     secondary: Color(0xFF9B51E0), // Roxo
-    accent: Color(0xFFFFD23F), // Dourado
+    accent: Color(0xFFFF8C42), // Laranja/amarelado (mudado de dourado FFD23F)
     background: Color(0xFF0A0A0A),
     backgroundSecondary: Color(0xFF1A0A0F),
     cardBackground: Color(0x66000000),

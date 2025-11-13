@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,9 +10,9 @@ class TechCarousel extends StatefulWidget {
   State<TechCarousel> createState() => _TechCarouselState();
 }
 
-class _TechCarouselState extends State<TechCarousel>
-    with SingleTickerProviderStateMixin {
+class _TechCarouselState extends State<TechCarousel> {
   late ScrollController _scrollController;
+  late Timer _timer;
 
   final List<TechItem> _technologies = [
     TechItem(name: 'Flutter', iconPath: 'assets/icons/flutter.svg', color: const Color(0xFF02569B)),
@@ -31,33 +32,33 @@ class _TechCarouselState extends State<TechCarousel>
     super.initState();
     _scrollController = ScrollController();
 
+    // Iniciar animação após build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _animateScroll();
+      _startAutoScroll();
     });
   }
 
-  void _animateScroll() async {
-    if (!mounted) return;
+  void _startAutoScroll() {
+    const scrollSpeed = 50.0; // pixels por segundo
 
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final minScroll = _scrollController.position.minScrollExtent;
+    _timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (!mounted || !_scrollController.hasClients) return;
 
-    // Anima até o final
-    await _scrollController.animateTo(
-      maxScroll,
-      duration: const Duration(seconds: 30),
-      curve: Curves.linear,
-    );
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.offset;
+      final nextScroll = currentScroll + (scrollSpeed * 0.05);
 
-    // Reseta para o início instantaneamente (sem animação)
-    _scrollController.jumpTo(minScroll);
-
-    // Repete infinitamente
-    _animateScroll();
+      if (nextScroll >= maxScroll) {
+        _scrollController.jumpTo(0);
+      } else {
+        _scrollController.jumpTo(nextScroll);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _timer.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -65,12 +66,13 @@ class _TechCarouselState extends State<TechCarousel>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 40),
       height: 120,
+      margin: const EdgeInsets.symmetric(vertical: 40),
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
-        itemCount: null, // Infinito
+        physics: const NeverScrollableScrollPhysics(), // Desabilita scroll manual
+        itemCount: _technologies.length * 100, // Muitos itens para loop infinito
         itemBuilder: (context, index) {
           final tech = _technologies[index % _technologies.length];
           return _buildTechItem(tech);

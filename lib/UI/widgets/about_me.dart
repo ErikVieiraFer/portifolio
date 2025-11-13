@@ -30,6 +30,7 @@ class AboutMe extends StatelessWidget {
                   ],
                 )
               : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Alinha no topo
                   children: [
                     Expanded(
                       flex: 2,
@@ -38,7 +39,10 @@ class AboutMe extends StatelessWidget {
                     const SizedBox(width: 40),
                     Expanded(
                       flex: 1,
-                      child: _buildImageSection(colors, isMobile),
+                      child: Transform.translate(
+                        offset: const Offset(0, -30), // SOBE 30 pixels
+                        child: _buildImageSection(colors, isMobile),
+                      ),
                     ),
                   ],
                 ),
@@ -87,31 +91,30 @@ class AboutMe extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Blur circular com cor do tema
+        // Blur centralizado (não só na cabeça)
         Container(
-          width: isMobile ? 400 : 450,
-          height: isMobile ? 400 : 450,
+          width: isMobile ? 400 : 400,
+          height: isMobile ? 450 : 500, // Mais alto para cobrir toda a imagem
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: colors.glow, // COR DO TEMA, não preto
+                color: colors.glow,
                 blurRadius: 60,
                 spreadRadius: 20,
               ),
             ],
           ),
         ),
-        // Imagem maior
-        Container(
-          width: isMobile ? 400 : 500, // Aumentado
-          height: isMobile ? 450 : 550, // Aumentado
-          padding: const EdgeInsets.all(20), // Padding para não cortar
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+        // Imagem COM BORDA ARREDONDADA
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20), // BORDA ARREDONDADA
+          child: SizedBox(
+            width: isMobile ? 400 : 450,
+            height: isMobile ? 450 : 550,
             child: Image.asset(
               'assets/images/about_character.png',
-              fit: BoxFit.contain, // Contain para não cortar
+              fit: BoxFit.cover, // Cover para preencher bem
               errorBuilder: (context, error, stackTrace) {
                 return Container(
                   decoration: BoxDecoration(

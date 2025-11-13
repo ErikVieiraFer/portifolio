@@ -27,8 +27,9 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
     return Column(
       children: [
         Container(
-          height: 700, // AUMENTADO de 620 para 700 para evitar cortes
-          margin: const EdgeInsets.symmetric(vertical: 40), // Mais espaço vertical
+          height: 750, // AUMENTADO para 750 para evitar cortes no hover
+          margin: const EdgeInsets.symmetric(vertical: 100), // AUMENTADO margem vertical
+          padding: const EdgeInsets.only(bottom: 60), // Padding inferior
           child: CarouselSlider.builder(
             carouselController: _carouselController,
             itemCount: projectsList.length,
@@ -53,7 +54,7 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
               );
             },
             options: CarouselOptions(
-              height: 650, // Altura interna maior
+              height: 680, // Altura interna maior
               viewportFraction: isMobile ? 0.85 : 0.35, // Mais espaço entre os cards
               enlargeCenterPage: true,
               enlargeFactor: 0.3, // Card central maior mas não exagerado

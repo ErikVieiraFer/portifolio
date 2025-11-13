@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio_flutter/core/constants/app_strings.dart';
 import 'package:portfolio_flutter/core/theme/theme_colors.dart';
@@ -143,6 +144,7 @@ class Contacts extends StatelessWidget {
           _buildContactItem(
             context: context,
             icon: Icons.code,
+            iconPath: 'assets/icons/github.svg', // Adiciona SVG
             label: AppStrings.githubLabel,
             value: 'github.com/ErikVieiraFer',
             colors: colors,
@@ -157,6 +159,7 @@ class Contacts extends StatelessWidget {
   Widget _buildContactItem({
     required BuildContext context,
     required IconData icon,
+    String? iconPath, // NOVO parâmetro
     required String label,
     required String value,
     required colors,
@@ -165,6 +168,7 @@ class Contacts extends StatelessWidget {
   }) {
     return ContactItemWidget(
       icon: icon,
+      iconPath: iconPath, // Passa para o widget
       label: label,
       value: value,
       colors: colors,
@@ -176,6 +180,7 @@ class Contacts extends StatelessWidget {
 
 class ContactItemWidget extends StatefulWidget {
   final IconData icon;
+  final String? iconPath; // NOVO
   final String label;
   final String value;
   final dynamic colors;
@@ -185,6 +190,7 @@ class ContactItemWidget extends StatefulWidget {
   const ContactItemWidget({
     super.key,
     required this.icon,
+    this.iconPath, // NOVO
     required this.label,
     required this.value,
     required this.colors,
@@ -229,7 +235,17 @@ class _ContactItemWidgetState extends State<ContactItemWidget> {
                   color: widget.colors.primary.withAlpha(50),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(widget.icon, color: widget.colors.primary, size: 24),
+                child: widget.iconPath != null
+                    ? SvgPicture.asset(
+                        widget.iconPath!,
+                        width: 24,
+                        height: 24,
+                        colorFilter: ColorFilter.mode(
+                          widget.colors.primary,
+                          BlendMode.srcIn,
+                        ),
+                      )
+                    : Icon(widget.icon, color: widget.colors.primary, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
