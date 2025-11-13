@@ -77,6 +77,9 @@ class _HomePageState extends State<HomePage> {
                     // 1. HERO - Personagem + Nome
                     Header(scrollController: _scrollController),
 
+                    // PADDING MAIOR antes dos projetos
+                    const SizedBox(height: 80),
+
                     // 2. PROJETOS - Carrossel de Smartphones
                     AutoScrollTag(
                       key: const ValueKey(1),
@@ -84,6 +87,9 @@ class _HomePageState extends State<HomePage> {
                       index: 1,
                       child: const ProjectsCarousel(),
                     ).animate().fadeIn(duration: 600.ms, delay: 200.ms),
+
+                    // PADDING MAIOR depois dos projetos
+                    const SizedBox(height: 80),
 
                     // 3. SOBRE MIM - Texto + Imagem Lateral
                     const AboutMe().animate().fadeIn(duration: 600.ms, delay: 400.ms),

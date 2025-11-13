@@ -18,12 +18,13 @@ class AppStrings {
 
   // About Me
   static const aboutMeDescription =
-      'Desenvolvedor com foco em Flutter e mentalidade full-stack. '
-      'Minha paixão é transformar ideias em software de alta qualidade, '
-      'aplicando princípios de Clean Architecture e S.O.L.I.D. para criar '
-      'soluções robustas, escaláveis e de fácil manutenção. Uno a excelência '
-      'técnica com uma forte disciplina de processos para entregar resultados '
-      'que geram valor real.';
+      'Desenvolvedor especializado em Flutter com visão full-stack. '
+      'Transformo ideias em software de alta performance, combinando '
+      'design elegante com código limpo e escalável. Aplico princípios '
+      'de Clean Architecture e SOLID para criar soluções que não apenas '
+      'funcionam, mas evoluem. Meu diferencial? União de excelência técnica '
+      'com disciplina rigorosa de processos, entregando resultados que '
+      'geram valor real e impacto mensurável para o negócio.';
 
   // Contact
   static const emailLabel = 'Email';

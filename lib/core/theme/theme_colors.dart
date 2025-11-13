@@ -65,8 +65,8 @@ class ThemeColors {
     background: Color(0xFF000000),
     backgroundSecondary: Color(0xFF001A00),
     cardBackground: Color(0x66000000),
-    textPrimary: Color(0xFF00FF41),
-    textSecondary: Color(0xB300FF41),
+    textPrimary: Color(0xFF00FF41),     // Verde
+    textSecondary: Color(0xFFB3FFB3),   // Verde claro (era B300FF41)
     border: Color(0xFF00FF41),
     glow: Color(0x8000FF41),
     backgroundGradient: RadialGradient(

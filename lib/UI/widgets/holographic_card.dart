@@ -36,10 +36,10 @@ class _HolographicCardState extends State<HolographicCard> {
         transform: Matrix4.identity()
           ..setEntry(3, 2, 0.001) // perspectiva
           ..rotateX(_isHovering && widget.isCenter ? -0.05 : 0)
-          ..scale(widget.isCenter ? (_isHovering ? 1.05 : 1.0) : 0.95),
+          ..scale(widget.isCenter ? (_isHovering ? 1.03 : 1.0) : 0.95), // Zoom reduzido de 1.05 para 1.03
         child: Container(
           width: 280, // largura de smartphone
-          height: 560, // altura de smartphone (proporção 9:16)
+          height: 580, // altura aumentada de 560 para 580 para garantir que cabe
           decoration: BoxDecoration(
             // Borda do "dispositivo"
             color: Colors.black,

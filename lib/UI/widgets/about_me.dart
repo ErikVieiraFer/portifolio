@@ -84,39 +84,52 @@ class AboutMe extends StatelessWidget {
   }
 
   Widget _buildImageSection(colors, bool isMobile) {
-    return Container(
-      height: isMobile ? 300 : 400,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(127),
-            blurRadius: 30,
-            offset: const Offset(0, 10),
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Blur circular com cor do tema
+        Container(
+          width: isMobile ? 400 : 450,
+          height: isMobile ? 400 : 450,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: colors.glow, // COR DO TEMA, não preto
+                blurRadius: 60,
+                spreadRadius: 20,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Image.asset(
-          'assets/images/about_character.png',
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              decoration: BoxDecoration(
-                color: colors.cardBackground,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: colors.border, width: 2),
-              ),
-              child: Icon(
-                Icons.person,
-                size: isMobile ? 100 : 150,
-                color: colors.primary,
-              ),
-            );
-          },
         ),
-      ),
+        // Imagem maior
+        Container(
+          width: isMobile ? 400 : 500, // Aumentado
+          height: isMobile ? 450 : 550, // Aumentado
+          padding: const EdgeInsets.all(20), // Padding para não cortar
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              'assets/images/about_character.png',
+              fit: BoxFit.contain, // Contain para não cortar
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: colors.cardBackground,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: colors.border, width: 2),
+                  ),
+                  child: Icon(
+                    Icons.person,
+                    size: isMobile ? 100 : 150,
+                    color: colors.primary,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -52,39 +52,50 @@ class Contacts extends StatelessWidget {
   }
 
   Widget _buildImageSection(colors, bool isMobile) {
-    return Container(
-      height: isMobile ? 400 : 500,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(127),
-            blurRadius: 30,
-            offset: const Offset(0, 10),
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Blur circular concentrado
+        Container(
+          width: 400,
+          height: 400,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: colors.glow,
+                blurRadius: 60,
+                spreadRadius: 20,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Image.asset(
-          'assets/images/contact_character.png',
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              decoration: BoxDecoration(
-                color: colors.cardBackground,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: colors.border, width: 2),
-              ),
-              child: Icon(
-                Icons.person,
-                size: isMobile ? 150 : 200,
-                color: colors.primary,
-              ),
-            );
-          },
         ),
-      ),
+        // Imagem
+        SizedBox(
+          height: isMobile ? 400 : 500,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              'assets/images/contact_character.png',
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: colors.cardBackground,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: colors.border, width: 2),
+                  ),
+                  child: Icon(
+                    Icons.person,
+                    size: isMobile ? 150 : 200,
+                    color: colors.primary,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 

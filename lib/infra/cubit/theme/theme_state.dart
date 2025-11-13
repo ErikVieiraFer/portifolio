@@ -5,7 +5,7 @@ class ThemeState extends Equatable {
   final AppThemeType currentTheme;
 
   const ThemeState({
-    this.currentTheme = AppThemeType.cyberpunk,
+    this.currentTheme = AppThemeType.sunset, // MUDADO de cyberpunk
   });
 
   @override

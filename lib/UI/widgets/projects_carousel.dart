@@ -26,48 +26,52 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
 
     return Column(
       children: [
-        CarouselSlider.builder(
-          carouselController: _carouselController,
-          itemCount: projectsList.length,
-          itemBuilder: (context, index, realIndex) {
-            final project = projectsList[index];
-            final isCenter = _currentIndex == index;
+        Container(
+          height: 700, // AUMENTADO de 620 para 700 para evitar cortes
+          margin: const EdgeInsets.symmetric(vertical: 40), // Mais espaço vertical
+          child: CarouselSlider.builder(
+            carouselController: _carouselController,
+            itemCount: projectsList.length,
+            itemBuilder: (context, index, realIndex) {
+              final project = projectsList[index];
+              final isCenter = _currentIndex == index;
 
-            // Rotação 3D para itens não centrais
-            final double rotationY = (index - _currentScrollValue).abs() > 0.5 ? (index - _currentScrollValue) * -0.2 : 0;
+              // Rotação 3D para itens não centrais
+              final double rotationY = (index - _currentScrollValue).abs() > 0.5 ? (index - _currentScrollValue) * -0.2 : 0;
 
-            final transform = Matrix4.identity()
-              ..setEntry(3, 2, 0.001) // Perspectiva
-              ..rotateY(rotationY.clamp(-0.3, 0.3));
+              final transform = Matrix4.identity()
+                ..setEntry(3, 2, 0.001) // Perspectiva
+                ..rotateY(rotationY.clamp(-0.3, 0.3));
 
-            return Transform(
-              transform: transform,
-              alignment: Alignment.center,
-              child: HolographicCard(
-                project: project,
-                isCenter: isCenter,
-              ),
-            );
-          },
-          options: CarouselOptions(
-            height: 620, // Altura ajustada para smartphone mockups (560 + padding)
-            viewportFraction: isMobile ? 0.85 : 0.35, // Mais espaço entre os cards
-            enlargeCenterPage: true,
-            enlargeFactor: 0.3, // Card central maior mas não exagerado
-            autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 5),
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentIndex = index;
-              });
+              return Transform(
+                transform: transform,
+                alignment: Alignment.center,
+                child: HolographicCard(
+                  project: project,
+                  isCenter: isCenter,
+                ),
+              );
             },
-            onScrolled: (value) {
-              if (value != null) {
+            options: CarouselOptions(
+              height: 650, // Altura interna maior
+              viewportFraction: isMobile ? 0.85 : 0.35, // Mais espaço entre os cards
+              enlargeCenterPage: true,
+              enlargeFactor: 0.3, // Card central maior mas não exagerado
+              autoPlay: true,
+              autoPlayInterval: const Duration(seconds: 5),
+              onPageChanged: (index, reason) {
                 setState(() {
-                  _currentScrollValue = value;
+                  _currentIndex = index;
                 });
-              }
-            },
+              },
+              onScrolled: (value) {
+                if (value != null) {
+                  setState(() {
+                    _currentScrollValue = value;
+                  });
+                }
+              },
+            ),
           ),
         ),
         const SizedBox(height: 20),
