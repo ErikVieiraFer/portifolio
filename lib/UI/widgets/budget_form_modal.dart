@@ -57,10 +57,9 @@ class _BudgetFormModalState extends State<BudgetFormModal> {
         listener: (context, state) {
           if (state.status == BudgetStatus.success) {
             Future.delayed(const Duration(seconds: 3), () {
-              if (mounted) {
-                Navigator.of(context).pop();
-                context.read<BudgetCubit>().reset();
-              }
+              if (!mounted) return;
+              Navigator.of(context).pop();
+              context.read<BudgetCubit>().reset();
             });
           }
         },

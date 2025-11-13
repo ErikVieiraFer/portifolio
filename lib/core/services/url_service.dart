@@ -10,10 +10,12 @@ class UrlService {
       if (await canLaunchUrl(uri)) {
         return await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
+        if (!context.mounted) return false;
         _showError(context, 'Não foi possível abrir o link');
         return false;
       }
     } catch (e) {
+      if (!context.mounted) return false;
       _showError(context, 'Erro ao processar URL: $e');
       return false;
     }

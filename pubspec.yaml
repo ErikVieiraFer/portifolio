@@ -26,7 +26,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_animate: ^4.5.0
   flutter_staggered_animations: ^1.1.1
-  shared_preferences: ^2.2.2  # ADICIONAR ESTA LINHA
+  shared_preferences: ^2.2.2
+  carousel_slider: ^5.1.1
 
 dev_dependencies:
   flutter_test:
