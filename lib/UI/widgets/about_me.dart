@@ -1,63 +1,120 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:portfolio_flutter/core/constants/app_colors.dart';
 import 'package:portfolio_flutter/core/constants/app_strings.dart';
-import 'package:portfolio_flutter/UI/widgets/hover_animated_title.dart';
+import 'package:portfolio_flutter/core/theme/theme_colors.dart';
+import 'package:portfolio_flutter/infra/cubit/theme/theme_cubit.dart';
+import 'package:portfolio_flutter/infra/cubit/theme/theme_state.dart';
 
-class AboutMe extends StatefulWidget {
+class AboutMe extends StatelessWidget {
   const AboutMe({super.key});
 
   @override
-  State<AboutMe> createState() => _AboutMeState();
-}
-
-class _AboutMeState extends State<AboutMe> {
-  bool _isHovering = false;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      cursor: SystemMouseCursors.basic,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        transform: Matrix4.identity()..scale(_isHovering ? 1.02 : 1.0),
-        transformAlignment: Alignment.center,
-        margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-        decoration: BoxDecoration(
-          color: _isHovering
-              ? const Color.fromRGBO(20, 20, 20, 0.5)
-              : AppColors.transparentBlack,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primaryPink, width: 2),
-          boxShadow: _isHovering
-              ? [
-                  BoxShadow(
-                    color: AppColors.primaryPink.withAlpha(80),
-                    blurRadius: 15,
-                    spreadRadius: 2,
-                  )
-                ]
-              : [],
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HoverAnimatedTitle(
-                title: AppStrings.aboutMeTitle,
-                isHovering: _isHovering,
-                style: Theme.of(context).textTheme.displayLarge,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                AppStrings.aboutMeDescription,
-                style: GoogleFonts.orbitron(fontSize: 16, color: Colors.white70),
-              ),
-            ],
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, themeState) {
+        final colors = ThemeColors.fromType(themeState.currentTheme);
+        final isMobile = MediaQuery.of(context).size.width < 600;
+
+        return Container(
+          margin: EdgeInsets.symmetric(
+            vertical: 40,
+            horizontal: isMobile ? 16 : 80,
           ),
+          child: isMobile
+              ? Column(
+                  children: [
+                    _buildTextSection(colors, isMobile),
+                    const SizedBox(height: 20),
+                    _buildImageSection(colors, isMobile),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: _buildTextSection(colors, isMobile),
+                    ),
+                    const SizedBox(width: 40),
+                    Expanded(
+                      flex: 1,
+                      child: _buildImageSection(colors, isMobile),
+                    ),
+                  ],
+                ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTextSection(colors, bool isMobile) {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: colors.cardBackground,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: colors.border, width: 2),
+        boxShadow: [
+          BoxShadow(color: colors.glow, blurRadius: 20),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'SOBRE MIM',
+            style: GoogleFonts.orbitron(
+              fontSize: isMobile ? 24 : 28,
+              fontWeight: FontWeight.bold,
+              color: colors.primary,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            AppStrings.aboutMeDescription,
+            style: GoogleFonts.orbitron(
+              fontSize: isMobile ? 14 : 16,
+              color: colors.textSecondary,
+              height: 1.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImageSection(colors, bool isMobile) {
+    return Container(
+      height: isMobile ? 300 : 400,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(127),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Image.asset(
+          'assets/images/about_character.png',
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              decoration: BoxDecoration(
+                color: colors.cardBackground,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: colors.border, width: 2),
+              ),
+              child: Icon(
+                Icons.person,
+                size: isMobile ? 100 : 150,
+                color: colors.primary,
+              ),
+            );
+          },
         ),
       ),
     );

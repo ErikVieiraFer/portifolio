@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio_flutter/core/constants/app_strings.dart';
+import 'package:portfolio_flutter/core/theme/theme_colors.dart';
 import 'package:portfolio_flutter/infra/cubit/budget/budget_cubit.dart';
+import 'package:portfolio_flutter/infra/cubit/theme/theme_cubit.dart';
+import 'package:portfolio_flutter/infra/cubit/theme/theme_state.dart';
 import 'package:portfolio_flutter/UI/widgets/budget_form_modal.dart';
 
 class BudgetButton extends StatefulWidget {
@@ -12,33 +15,8 @@ class BudgetButton extends StatefulWidget {
   State<BudgetButton> createState() => _BudgetButtonState();
 }
 
-class _BudgetButtonState extends State<BudgetButton>
-    with SingleTickerProviderStateMixin {
+class _BudgetButtonState extends State<BudgetButton> {
   bool _isHovering = false;
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(
-        parent: _pulseController,
-        curve: Curves.easeInOut,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
 
   void _openBudgetForm() {
     showDialog(
@@ -53,82 +31,100 @@ class _BudgetButtonState extends State<BudgetButton>
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      cursor: SystemMouseCursors.click,
-      child: AnimatedBuilder(
-        animation: _pulseAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _isHovering ? 1.05 : _pulseAnimation.value,
-            child: Container(
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.pinkAccent.withAlpha(100),
-                    blurRadius: _isHovering ? 25 : 15,
-                    spreadRadius: _isHovering ? 3 : 1,
-                  ),
-                ],
-              ),
-              child: ElevatedButton(
-                onPressed: _openBudgetForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pinkAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 24,
-                    horizontal: 32,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: _isHovering ? 8 : 4,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.request_quote,
-                      size: 32,
-                      color: _isHovering ? Colors.yellow : Colors.white,
-                    ),
-                    const SizedBox(width: 16),
-                    Flexible(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppStrings.budgetButton,
-                            style: GoogleFonts.orbitron(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Transforme sua ideia em realidade',
-                            style: GoogleFonts.orbitron(
-                              fontSize: 12,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, themeState) {
+        final colors = ThemeColors.fromType(themeState.currentTheme);
+        final isMobile = MediaQuery.of(context).size.width < 600;
+
+        return MouseRegion(
+          onEnter: (_) => setState(() => _isHovering = true),
+          onExit: (_) => setState(() => _isHovering = false),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            margin: EdgeInsets.symmetric(
+              vertical: 60,
+              horizontal: isMobile ? 16 : 80,
             ),
-          );
-        },
-      ),
+            padding: EdgeInsets.all(isMobile ? 32 : 48),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  colors.primary,
+                  colors.secondary,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: _isHovering ? colors.glow : colors.primary.withAlpha(127),
+                  blurRadius: _isHovering ? 40 : 25,
+                  spreadRadius: _isHovering ? 8 : 3,
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.rocket_launch,
+                  size: isMobile ? 48 : 64,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'PRONTO PARA COMEÇAR?',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.orbitron(
+                    fontSize: isMobile ? 24 : 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Transforme sua ideia em realidade',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.orbitron(
+                    fontSize: isMobile ? 14 : 18,
+                    color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: _openBudgetForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: colors.primary,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 40 : 60,
+                      vertical: isMobile ? 20 : 24,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 8,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppStrings.budgetButton.toUpperCase(),
+                        style: GoogleFonts.orbitron(
+                          fontSize: isMobile ? 14 : 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(Icons.arrow_forward, size: isMobile ? 20 : 24),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

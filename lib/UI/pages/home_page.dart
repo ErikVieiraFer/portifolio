@@ -3,20 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:portfolio_flutter/UI/widgets/about_me.dart';
 import 'package:portfolio_flutter/UI/widgets/contacts.dart';
-import 'package:portfolio_flutter/UI/widgets/curriculum_button.dart';
 import 'package:portfolio_flutter/UI/widgets/header.dart';
-import 'package:portfolio_flutter/UI/widgets/languages_widget.dart';
 import 'package:portfolio_flutter/UI/widgets/projects_carousel.dart';
 import 'package:portfolio_flutter/UI/widgets/budget_button.dart';
+import 'package:portfolio_flutter/UI/widgets/tech_carousel.dart';
 import 'package:portfolio_flutter/UI/widgets/theme_switcher.dart';
 import 'package:portfolio_flutter/UI/widgets/particle_background.dart';
 import 'package:portfolio_flutter/UI/widgets/spotlight_effect.dart';
-import 'package:portfolio_flutter/infra/cubit/curriculum/curriculum_cubit.dart';
-import 'package:portfolio_flutter/infra/cubit/languages/languages_cubit.dart';
+import 'package:portfolio_flutter/core/theme/theme_colors.dart';
 import 'package:portfolio_flutter/infra/cubit/theme/theme_cubit.dart';
 import 'package:portfolio_flutter/infra/cubit/theme/theme_state.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:portfolio_flutter/core/theme/theme_colors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -50,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, themeState) {
-        final colors = themeState.currentTheme.colors;
+        final colors = ThemeColors.fromType(themeState.currentTheme);
         return Scaffold(
           backgroundColor: colors.background, // Cor de fundo base
           body: Stack(
@@ -77,52 +74,31 @@ class _HomePageState extends State<HomePage> {
                 physics: const ClampingScrollPhysics(),
                 child: Column(
                   children: [
-                    // Header - Sem SafeArea para remover divisão visual
+                    // 1. HERO - Personagem + Nome
                     Header(scrollController: _scrollController),
-                    // Projects sem espaçamento adicional para fluidez visual
+
+                    // 2. PROJETOS - Carrossel de Smartphones
                     AutoScrollTag(
                       key: const ValueKey(1),
                       controller: _scrollController,
                       index: 1,
-                      child: const ProjectsCarousel().animate().fade(
-                            duration: 600.ms,
-                            delay: 200.ms,
-                          ).slide(begin: const Offset(0, 0.2)),
-                    ),
-                    const BudgetButton().animate().fade(
-                          duration: 600.ms,
-                          delay: 300.ms,
-                        ).scaleXY(begin: 0.8, end: 1.0),
-                    const AboutMe().animate().fade(
-                          duration: 600.ms,
-                          delay: 400.ms,
-                        ).slide(begin: const Offset(-0.2, 0)),
-                    MultiBlocProvider(
-                      providers: [BlocProvider(create: (_) => LanguagesCubit())],
-                      child: const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: LanguagesWidget(),
-                      ).animate().fade(
-                            duration: 600.ms,
-                            delay: 200.ms,
-                          ).slide(begin: const Offset(0, 0.2)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: BlocProvider(
-                        create: (_) => CurriculumCubit(),
-                        child: const CurriculumButton(),
-                      ).animate().fade(
-                            duration: 600.ms,
-                            delay: 400.ms,
-                          ).slide(begin: const Offset(0.2, 0)),
-                    ),
-                    const Contacts().animate().fade(
-                          duration: 600.ms,
-                          delay: 200.ms,
-                        ).slide(begin: const Offset(0, 0.2)),
-                    // Espaçamento no final para garantir que o último item possa ser rolado para cima
-                    const SizedBox(height: 40),
+                      child: const ProjectsCarousel(),
+                    ).animate().fadeIn(duration: 600.ms, delay: 200.ms),
+
+                    // 3. SOBRE MIM - Texto + Imagem Lateral
+                    const AboutMe().animate().fadeIn(duration: 600.ms, delay: 400.ms),
+
+                    // 4. SOLICITAR ORÇAMENTO - Card CTA Grande
+                    const BudgetButton().animate().fadeIn(duration: 600.ms, delay: 200.ms),
+
+                    // 5. CARROSSEL DE TECNOLOGIAS - Infinito
+                    const TechCarousel(),
+
+                    // 6. CONTATO - Imagem + Informações
+                    const Contacts().animate().fadeIn(duration: 600.ms, delay: 200.ms),
+
+                    // Espaçamento final
+                    const SizedBox(height: 60),
                   ],
                 ),
               ),
