@@ -53,26 +53,6 @@ class _HomePageState extends State<HomePage> {
         final colors = themeState.currentTheme.colors;
         return Scaffold(
           backgroundColor: colors.background, // Cor de fundo base
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            actions: const [
-              ThemeSwitcherDropdown(),
-              SizedBox(width: 8),
-            ],
-          ),
-          floatingActionButton: _showBackToTop
-              ? FloatingActionButton(
-                  onPressed: () => _scrollController.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 800),
-                    curve: Curves.easeInOut,
-                  ),
-                  backgroundColor: colors.primary,
-                  child: const Icon(Icons.arrow_upward, color: Colors.white),
-                )
-              : null,
           body: Stack(
             children: [
               // CAMADA 1: Gradiente de Fundo
@@ -97,11 +77,9 @@ class _HomePageState extends State<HomePage> {
                 physics: const ClampingScrollPhysics(),
                 child: Column(
                   children: [
-                    // SafeArea para o Header para não ficar sob a status bar
-                    SafeArea(
-                      bottom: false, // Apenas no topo
-                      child: Header(scrollController: _scrollController),
-                    ),
+                    // Header - Sem SafeArea para remover divisão visual
+                    Header(scrollController: _scrollController),
+                    // Projects sem espaçamento adicional para fluidez visual
                     AutoScrollTag(
                       key: const ValueKey(1),
                       controller: _scrollController,
@@ -148,6 +126,44 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+              // CAMADA 5: Botão de Tema Flutuante (Canto Superior Direito)
+              Positioned(
+                top: 50, // Espaço para status bar
+                right: 20,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withAlpha(180),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: colors.border,
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colors.glow,
+                        blurRadius: 15,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: const ThemeSwitcherDropdown(),
+                ),
+              ),
+              // CAMADA 6: Botão Voltar ao Topo (Canto Inferior Direito)
+              if (_showBackToTop)
+                Positioned(
+                  bottom: 20,
+                  right: 20,
+                  child: FloatingActionButton(
+                    onPressed: () => _scrollController.animateTo(
+                      0,
+                      duration: const Duration(milliseconds: 800),
+                      curve: Curves.easeInOut,
+                    ),
+                    backgroundColor: colors.primary,
+                    child: const Icon(Icons.arrow_upward, color: Colors.white),
+                  ),
+                ),
             ],
           ),
         );

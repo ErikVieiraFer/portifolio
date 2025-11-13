@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio_flutter/infra/cubit/theme/theme_cubit.dart';
-import 'package:portfolio_flutter/UI/widgets/scanner_effect.dart';
 import 'package:portfolio_flutter/core/models/project_model.dart';
 import 'package:portfolio_flutter/core/theme/theme_colors.dart';
+import 'package:portfolio_flutter/core/services/url_service.dart';
 
-class HolographicCard extends StatelessWidget {
+class HolographicCard extends StatefulWidget {
   final Project project;
   final bool isCenter;
 
@@ -16,142 +17,236 @@ class HolographicCard extends StatelessWidget {
   });
 
   @override
+  State<HolographicCard> createState() => _HolographicCardState();
+}
+
+class _HolographicCardState extends State<HolographicCard> {
+  bool _isHovering = false;
+
+  @override
   Widget build(BuildContext context) {
     final themeState = context.watch<ThemeCubit>().state;
     final colors = themeState.currentTheme.colors;
-    final size = MediaQuery.of(context).size;
 
-    return SizedBox(
-      width: size.width * 0.45,
-      height: 450, // Altura aumentada para o card
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Card principal
-          Positioned(
-            top: 0,
-            child: Container(
-              width: size.width * 0.4,
-              height: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isCenter ? colors.primary.withOpacity(0.8) : colors.border.withOpacity(0.5),
-                  width: isCenter ? 2 : 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: isCenter ? colors.glow.withOpacity(0.5) : colors.primary.withOpacity(0.2),
-                    blurRadius: isCenter ? 30 : 15,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(project.imagePath, fit: BoxFit.cover),
-                    Container(
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001) // perspectiva
+          ..rotateX(_isHovering && widget.isCenter ? -0.05 : 0)
+          ..scale(widget.isCenter ? (_isHovering ? 1.05 : 1.0) : 0.95),
+        child: Container(
+          width: 280, // largura de smartphone
+          height: 560, // altura de smartphone (proporção 9:16)
+          decoration: BoxDecoration(
+            // Borda do "dispositivo"
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(
+              color: widget.isCenter
+                  ? colors.primary.withOpacity(0.8)
+                  : colors.border.withOpacity(0.5),
+              width: 3,
+            ),
+            boxShadow: _isHovering && widget.isCenter
+                ? [
+                    BoxShadow(
+                      color: colors.glow,
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                    )
+                  ]
+                : [
+                    BoxShadow(
+                      color: widget.isCenter
+                          ? colors.primary.withOpacity(0.3)
+                          : Colors.black.withAlpha(127),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
+                    )
+                  ],
+          ),
+          padding: const EdgeInsets.all(8), // borda do dispositivo
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              color: Colors.black,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              children: [
+                // "Notch" superior do celular
+                Container(
+                  height: 30,
+                  color: Colors.black,
+                  child: Center(
+                    child: Container(
+                      width: 120,
+                      height: 20,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.1),
-                            Colors.black.withOpacity(0.8),
-                          ],
-                        ),
+                        color: Colors.grey[900],
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    CustomPaint(
-                      size: Size.infinite,
-                      painter: _GridPainter(colors.secondary.withOpacity(0.2)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            project.title,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              shadows: [Shadow(blurRadius: 10, color: colors.glow)],
+                  ),
+                ),
+
+                // Tela do celular com imagem do projeto
+                Expanded(
+                  child: Container(
+                    color: Colors.white,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // Imagem do projeto
+                        Image.asset(
+                          widget.project.imagePath,
+                          fit: BoxFit.cover,
+                        ),
+
+                        // Overlay com informações (sempre visível se isCenter)
+                        if (_isHovering || widget.isCenter)
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withAlpha(230),
+                                ],
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.project.title,
+                                  style: GoogleFonts.orbitron(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  widget.project.description,
+                                  style: GoogleFonts.orbitron(
+                                    fontSize: 12,
+                                    color: Colors.white70,
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 12),
+
+                                // Badges de tecnologias
+                                Wrap(
+                                  spacing: 4,
+                                  runSpacing: 4,
+                                  children: widget.project.techs
+                                      .map((tech) => Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: colors.primary.withAlpha(180),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              tech,
+                                              style: GoogleFonts.orbitron(
+                                                fontSize: 10,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                // Botões de ação
+                                Row(
+                                  children: [
+                                    if (widget.project.githubUrl != null)
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: () => UrlService.launchURL(
+                                            widget.project.githubUrl!,
+                                            context,
+                                          ),
+                                          icon: const Icon(Icons.code, size: 16),
+                                          label: Text(
+                                            'GitHub',
+                                            style: GoogleFonts.orbitron(fontSize: 10),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: colors.secondary,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 8,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    if (widget.project.githubUrl != null &&
+                                        widget.project.demoUrl != null)
+                                      const SizedBox(width: 8),
+                                    if (widget.project.demoUrl != null)
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: () => UrlService.launchURL(
+                                            widget.project.demoUrl!,
+                                            context,
+                                          ),
+                                          icon: const Icon(Icons.play_arrow, size: 16),
+                                          label: Text(
+                                            'Demo',
+                                            style: GoogleFonts.orbitron(fontSize: 10),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: colors.primary,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 8,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            project.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (isCenter) const ScannerEffect(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Efeito de reflexo
-          if (isCenter)
-            Positioned(
-              top: 300, // Posiciona o reflexo logo abaixo do card
-              child: Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.identity()..scale(1.0, -1.0, 1.0),
-                child: ShaderMask(
-                  shaderCallback: (bounds) {
-                    return LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.white.withOpacity(0.3), Colors.transparent],
-                    ).createShader(bounds);
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      project.imagePath,
-                      width: size.width * 0.4,
-                      height: 100,
-                      fit: BoxFit.cover,
+                      ],
                     ),
                   ),
                 ),
-              ),
+
+                // "Barra" inferior do celular
+                Container(
+                  height: 20,
+                  color: Colors.black,
+                  child: Center(
+                    child: Container(
+                      width: 80,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-        ],
+          ),
+        ),
       ),
     );
   }
 }
-
-class _GridPainter extends CustomPainter {
-  final Color color;
-  _GridPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 0.5;
-
-    for (var i = 0; i < size.width / 20; i++) {
-      canvas.drawLine(Offset(i * 20, 0), Offset(i * 20, size.height), paint);
-    }
-    for (var i = 0; i < size.height / 20; i++) {
-      canvas.drawLine(Offset(0, i * 20), Offset(size.width, i * 20), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-

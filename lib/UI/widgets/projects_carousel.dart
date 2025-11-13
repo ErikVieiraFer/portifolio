@@ -50,10 +50,10 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
             );
           },
           options: CarouselOptions(
-            height: 600, // Altura bem maior
-            viewportFraction: isMobile ? 0.8 : 0.3, // Mais espaço entre os cards
+            height: 620, // Altura ajustada para smartphone mockups (560 + padding)
+            viewportFraction: isMobile ? 0.85 : 0.35, // Mais espaço entre os cards
             enlargeCenterPage: true,
-            enlargeFactor: 0.5, // Card central bem maior
+            enlargeFactor: 0.3, // Card central maior mas não exagerado
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 5),
             onPageChanged: (index, reason) {
