@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Erik Vieira — Flutter Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ocean-deep: #0a1628;
+      --ocean-mid: #0d2444;
+      --ocean-light: #1a4a7a;
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --cream: #f5e6c8;
+      --red: #cc2222;
+      --white: #ffffff;
+      --text-muted: #8aabb8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ocean-deep);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      background: linear-gradient(to bottom, rgba(10,22,40,0.95), transparent);
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #sketchfab-container {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    #sketchfab-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, var(--ocean-deep) 0%, transparent 35%),
+        linear-gradient(to bottom, rgba(10,22,40,0.6) 0%, transparent 30%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      pointer-events: none;
+      transform: translateY(-40px);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      opacity: 0;
+    }
+
+    .hero-name {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--white);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.8), 0 0 80px rgba(201,168,76,0.2);
+      opacity: 0;
+    }
+
+    .hero-name span { color: var(--gold); }
+
+    .hero-subtitle {
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 20px;
+      opacity: 0;
+    }
+
+    .hero-cta {
+      margin-top: 48px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      pointer-events: all;
+      opacity: 0;
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      background: var(--gold);
+      color: var(--ocean-deep);
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+    .btn-secondary {
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--cream);
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(201,168,76,0.4);
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 1s ease 2s forwards;
+    }
+
+    .scroll-hint span {
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .scroll-arrow {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      position: relative;
+      padding: 120px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 64px;
+    }
+
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent);
+      margin: 0;
+    }
+
+    /* ── ABOUT ── */
+    #about-wrap { background: linear-gradient(to bottom, var(--ocean-deep), var(--ocean-mid)); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .bounty-poster {
+      position: relative;
+      background: var(--cream);
+      padding: 32px 28px 48px;
+      transform: rotate(-1.5deg);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(0,0,0,0.1);
+      max-width: 340px;
+    }
+
+    .bounty-poster::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(0,0,0,0.15);
+      pointer-events: none;
+    }
+
+    .bounty-header {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 4px;
+      color: var(--red);
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--ocean-deep);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .bounty-photo {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: linear-gradient(135deg, var(--ocean-mid), var(--ocean-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      margin-bottom: 16px;
+    }
+
+    .bounty-name {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--ocean-deep);
+      letter-spacing: 2px;
+      border-top: 2px solid var(--ocean-deep);
+      border-bottom: 2px solid var(--ocean-deep);
+      padding: 8px 0;
+      margin-bottom: 12px;
+    }
+
+    .bounty-value {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      color: var(--ocean-deep);
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
+
+    .bounty-value strong {
+      display: block;
+      font-size: 1.2rem;
+      color: var(--red);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .about-text { opacity: 0; transform: translateX(40px); }
+
+    .about-text p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .about-text p strong { color: var(--cream); }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-tag {
+      padding: 6px 14px;
+      border: 1px solid rgba(201,168,76,0.3);
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      color: var(--gold);
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      background: rgba(201,168,76,0.05);
+      transition: background 0.2s;
+    }
+
+    .skill-tag:hover { background: rgba(201,168,76,0.15); }
+
+    /* ── PROJECTS ── */
+    #projects-wrap { background: var(--ocean-mid); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px;
+    }
+
+    .project-card {
+      position: relative;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 32px;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s, background 0.3s;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--gold);
+      transition: height 0.3s ease;
+    }
+
+    .project-card:hover {
+      border-color: rgba(201,168,76,0.5);
+      transform: translateY(-6px);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .project-card:hover::before { height: 100%; }
+
+    .project-draft {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ocean-deep);
+      background: var(--gold);
+      padding: 3px 10px;
+      clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+    }
+
+    .project-number {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: rgba(201,168,76,0.12);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .project-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .project-desc {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .project-techs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+
+    .tech-badge {
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      background: rgba(26,74,122,0.6);
+      border: 1px solid rgba(26,74,122,0.8);
+      color: #7ab8e8;
+      border-radius: 2px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    .project-link {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--gold);
+      border-bottom: 1px solid rgba(201,168,76,0.3);
+      padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+
+    .project-link:hover { border-color: var(--gold); }
+
+    /* ── CTA ── */
+    #cta-wrap {
+      background: linear-gradient(to bottom, var(--ocean-mid), var(--ocean-deep));
+      text-align: center;
+    }
+
+    #cta-wrap section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cta-quote {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.5rem, 3vw, 2.8rem);
+      font-weight: 700;
+      color: var(--white);
+      max-width: 720px;
+      line-height: 1.3;
+      margin-bottom: 24px;
+      opacity: 0;
+    }
+
+    .cta-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+      opacity: 0;
+    }
+
+    .cta-buttons { opacity: 0; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+
+    .contact-row {
+      margin-top: 64px;
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .contact-label {
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .contact-value {
+      font-size: 0.9rem;
+      color: var(--cream);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-value:hover { color: var(--gold); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 32px;
+      border-top: 1px solid rgba(201,168,76,0.1);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+    }
+
+    /* ── OCEAN CANVAS ── */
+    #ocean-canvas {
+      position: fixed;
+      bottom: 0; left: 0;
+      width: 100%;
+      height: 120px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,168,76,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.12s ease-out;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 0.7rem; }
+      section { padding: 80px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .bounty-poster { margin: 0 auto; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .contact-row { gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">EV</a>
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div id="hero">
+    <div id="sketchfab-container">
+      <iframe
+        title="One Piece Marine ship"
+        allowfullscreen
+        mozallowfullscreen="true"
+        webkitallowfullscreen="true"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        src="https://sketchfab.com/models/fbb3018c6ed64f36b482beaf12a9598f/embed?autostart=1&ui_controls=0&ui_infos=0&ui_inspector=0&ui_stop=0&ui_watermark=0&ui_watermark_link=0&dnt=1&camera=0&transparent=0&annotations_visible=0&orbit_constraint_zoom_in=1">
+      </iframe>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content" id="hero-content">
+      <p class="hero-eyebrow" id="hero-eyebrow">Flutter Developer</p>
+      <h1 class="hero-name" id="hero-name">ERIK <span>VIEIRA</span></h1>
+      <p class="hero-subtitle" id="hero-subtitle">Transformando ideias em software de alto impacto</p>
+      <div class="hero-cta" id="hero-cta">
+        <a href="#projetos" class="btn-primary">Ver Projetos</a>
+        <a href="#contato" class="btn-secondary">Falar Comigo</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>Explorar</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="sobre" id-wrap="about-wrap" style="background: linear-gradient(to bottom, #0a1628, #0d2444);">
+    <div class="section-divider"></div>
+    <section>
+      <p class="section-label">// 01 — Tripulante</p>
+      <h2 class="section-title">Sobre Mim</h2>
+      <div class="about-grid">
+        <div class="bounty-poster" id="bounty-poster">
+          <div class="bounty-header">⚓ Ficha de Tripulante ⚓</div>
+          <div class="bounty-photo">👨‍💻</div>
+          <div class="bounty-name">ERIK VIEIRA</div>
+          <div class="bounty-value">
+            Especialidade
+            <strong>Flutter Dev</strong>
+          </div>
+        </div>
+        <div class="about-text" id="about-text">
+          <p>
+            Desenvolvedor especializado em <strong>Flutter</strong> com visão full-stack.
+            Transformo ideias em software de alta performance, combinando design elegante
+            com código limpo e escalável.
+          </p>
+          <p>
+            Aplico princípios de <strong>Clean Architecture</strong> e SOLID para criar
+            soluções que não apenas funcionam, mas evoluem. Meu diferencial? União de
+            excelência técnica com disciplina rigorosa de processos.
+          </p>
+          <div class="skills-grid">
+            <span class="skill-tag">Flutter</span>
+            <span class="skill-tag">Dart</span>
+            <span class="skill-tag">Firebase</span>
+            <span class="skill-tag">BLoC</span>
+            <span class="skill-tag">Provider</span>
+            <span class="skill-tag">Clean Arch</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Django</span>
+            <span class="skill-tag">HTML/CSS</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">REST API</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PROJECTS -->
+  <div id="projetos" style="background: #0d2444;">
+    <div class="section-divider"></div>
+    <section>
+      <p class="section-label">// 02 — Destinos da Grand Line</p>
+      <h2 class="section-title">Projetos</h2>
+      <div class="projects-grid" id="projects-grid">
+
+        <div class="project-card">
+          <div class="project-number">01</div>
+          <h3 class="project-title">TechTaste</h3>
+          <p class="project-desc">App Flutter para avaliação de restaurantes e pratos, com interface moderna e integração com mapas.</p>
+          <div class="project-techs">
+            <span class="tech-badge">Flutter</span>
+            <span class="tech-badge">Google Maps</span>
+            <span class="tech-badge">Firebase</span>
+            <span class="tech-badge">BLoC</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/ErikVieiraFer/TechTaste" target="_blank" class="project-link">GitHub</a>
+            <a href="https://erikvieirafer.github.io/TechTaste/" target="_blank" class="project-link">Demo</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-number">02</div>
+          <h3 class="project-title">DaiAIlog</h3>
+          <p class="project-desc">Usa a API do Google Gemini para gerar perguntas personalizadas que facilitam networking em eventos.</p>
+          <div class="project-techs">
+            <span class="tech-badge">Flutter</span>
+            <span class="tech-badge">Gemini AI</span>
+            <span class="tech-badge">Material Design</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/ErikVieiraFer/diailog" target="_blank" class="project-link">GitHub</a>
+            <a href="https://erikvieirafer.github.io/diailog/" target="_blank" class="project-link">Demo</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-number">03</div>
+          <h3 class="project-title">Grupo Resiliência</h3>
+          <p class="project-desc">Site institucional conectando dependentes químicos à clínica de reabilitação ideal para sua jornada de recuperação.</p>
+          <div class="project-techs">
+            <span class="tech-badge">HTML</span>
+            <span class="tech-badge">CSS</span>
+            <span class="tech-badge">JavaScript</span>
+          </div>
+          <div class="project-links">
+            <a href="https://fsresiliencia.com.br/" target="_blank" class="project-link">Ver Site</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-number">04</div>
+          <h3 class="project-title">Alano Crypto FX</h3>
+          <p class="project-desc">Plataforma profissional para trader especializado em mercado de criptomoedas e forex.</p>
+          <div class="project-techs">
+            <span class="tech-badge">Web</span>
+            <span class="tech-badge">Design</span>
+            <span class="tech-badge">UI/UX</span>
+          </div>
+          <div class="project-links">
+            <a href="https://alanocryptofx.com.br" target="_blank" class="project-link">Ver Site</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-number">05</div>
+          <h3 class="project-title">Gminds</h3>
+          <p class="project-desc">Plataforma digital de alto impacto com foco em performance e experiência do usuário.</p>
+          <div class="project-techs">
+            <span class="tech-badge">Web</span>
+            <span class="tech-badge">Design</span>
+            <span class="tech-badge">UI/UX</span>
+          </div>
+          <div class="project-links">
+            <a href="https://gminds.com" target="_blank" class="project-link">Ver Site</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-number">06</div>
+          <div class="project-draft">Em Dev</div>
+          <h3 class="project-title">EasyWeigh</h3>
+          <p class="project-desc">App enterprise de controle de estoque com pesagem via Bluetooth, sincronização offline e backend Django.</p>
+          <div class="project-techs">
+            <span class="tech-badge">Flutter</span>
+            <span class="tech-badge">Python</span>
+            <span class="tech-badge">Django</span>
+            <span class="tech-badge">Bluetooth</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-number">07</div>
+          <h3 class="project-title">Calculadora IMC</h3>
+          <p class="project-desc">App educacional demonstrando 3 abordagens de state management: setState, Provider e BLoC com mesmo domínio.</p>
+          <div class="project-techs">
+            <span class="tech-badge">Flutter</span>
+            <span class="tech-badge">BLoC</span>
+            <span class="tech-badge">Provider</span>
+            <span class="tech-badge">setState</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/ErikVieiraFer/imc_state_manager" target="_blank" class="project-link">GitHub</a>
+            <a href="https://erikvieirafer.github.io/imc_state_manager/" target="_blank" class="project-link">Demo</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- CTA -->
+  <div id="contato" style="background: linear-gradient(to bottom, #0d2444, #0a1628); text-align: center;">
+    <div class="section-divider"></div>
+    <section style="display: flex; flex-direction: column; align-items: center;">
+      <p class="section-label">// 03 — Recrutamento</p>
+      <h2 class="cta-quote" id="cta-quote">
+        Precisa de um desenvolvedor na sua tripulação?
+      </h2>
+      <p class="cta-sub" id="cta-sub">
+        Estou disponível para projetos freelance e oportunidades de colaboração.
+      </p>
+      <div class="cta-buttons" id="cta-buttons">
+        <a href="mailto:erikvieira2001nxn@gmail.com" class="btn-primary">Enviar Email</a>
+        <a href="https://github.com/ErikVieiraFer" target="_blank" class="btn-secondary">GitHub</a>
+      </div>
+      <div class="contact-row" id="contact-row">
+        <div class="contact-item">
+          <span class="contact-label">Email</span>
+          <a href="mailto:erikvieira2001nxn@gmail.com" class="contact-value">erikvieira2001nxn@gmail.com</a>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">GitHub</span>
+          <a href="https://github.com/ErikVieiraFer" target="_blank" class="contact-value">@ErikVieiraFer</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2025 Erik Vieira &mdash; Flutter Developer
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ── HERO ENTRANCE ──
+    const tl = gsap.timeline({ delay: 0.8 });
+    tl.to('#hero-eyebrow', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' })
+      .to('#hero-name',    { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.2')
+      .to('#hero-subtitle',{ opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.3')
+      .to('#hero-cta',     { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.2');
+
+    // ── MOUSE PARALLAX ON HERO ──
+    const heroContent = document.getElementById('hero-content');
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 10;
+      gsap.to(heroContent, { x, y, duration: 1.2, ease: 'power2.out' });
+    });
+
+    // ── ABOUT ANIMATIONS ──
+    gsap.from('#bounty-poster', {
+      scrollTrigger: { trigger: '#bounty-poster', start: 'top 80%' },
+      opacity: 0, x: -60, duration: 0.9, ease: 'power2.out'
+    });
+    gsap.to('#about-text', {
+      scrollTrigger: { trigger: '#about-text', start: 'top 80%' },
+      opacity: 1, x: 0, duration: 0.9, ease: 'power2.out'
+    });
+
+    // ── PROJECT CARDS ──
+    gsap.utils.toArray('.project-card').forEach((card, i) => {
+      gsap.to(card, {
+        scrollTrigger: { trigger: card, start: 'top 85%' },
+        opacity: 1, y: 0,
+        duration: 0.6,
+        delay: (i % 3) * 0.12,
+        ease: 'power2.out'
+      });
+    });
+
+    // ── CTA ANIMATIONS ──
+    gsap.to('#cta-quote', {
+      scrollTrigger: { trigger: '#cta-quote', start: 'top 80%' },
+      opacity: 1, y: 0, duration: 0.8, ease: 'power2.out'
+    });
+    gsap.to('#cta-sub', {
+      scrollTrigger: { trigger: '#cta-sub', start: 'top 85%' },
+      opacity: 1, y: 0, duration: 0.7, delay: 0.15, ease: 'power2.out'
+    });
+    gsap.to('#cta-buttons', {
+      scrollTrigger: { trigger: '#cta-buttons', start: 'top 90%' },
+      opacity: 1, y: 0, duration: 0.7, delay: 0.25, ease: 'power2.out'
+    });
+    gsap.to('#contact-row', {
+      scrollTrigger: { trigger: '#contact-row', start: 'top 90%' },
+      opacity: 1, y: 0, duration: 0.7, delay: 0.35, ease: 'power2.out'
+    });
+
+    // ── CUSTOM CURSOR ──
+    const cursor     = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursor-ring');
+    let mx = 0, my = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      gsap.to(cursor,     { x: mx, y: my, duration: 0.05 });
+      gsap.to(cursorRing, { x: mx, y: my, duration: 0.18 });
+    });
+
+    document.querySelectorAll('a, button, .project-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        gsap.to(cursorRing, { scale: 1.8, borderColor: 'rgba(201,168,76,0.9)', duration: 0.2 });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(cursorRing, { scale: 1, borderColor: 'rgba(201,168,76,0.5)', duration: 0.2 });
+      });
+    });
+
+    // ── SMOOTH NAV ──
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
