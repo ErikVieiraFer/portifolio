@@ -92,7 +92,7 @@ class _LanguagesWidgetState extends State<LanguagesWidget> {
       cursor: SystemMouseCursors.basic,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        transform: Matrix4.identity()..scale(isHovering ? 1.1 : 1.0),
+        transform: Matrix4.identity()..scale(isHovering ? 1.1 : 1.0, isHovering ? 1.1 : 1.0, 1.0),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isHovering && !isPrimary

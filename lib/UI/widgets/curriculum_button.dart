@@ -25,7 +25,7 @@ class _CurriculumButtonState extends State<CurriculumButton> {
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        transform: Matrix4.identity()..scale(_isHovering ? 1.05 : 1.0),
+        transform: Matrix4.identity()..scale(_isHovering ? 1.05 : 1.0, _isHovering ? 1.05 : 1.0, 1.0),
         transformAlignment: Alignment.center,
         child: Container(
           width: double.infinity,

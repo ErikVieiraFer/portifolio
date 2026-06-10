@@ -56,7 +56,6 @@ class Contacts extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Blur circular concentrado
         Container(
           width: 400,
           height: 400,
@@ -71,11 +70,20 @@ class Contacts extends StatelessWidget {
             ],
           ),
         ),
-        // Imagem
-        SizedBox(
-          height: isMobile ? 400 : 500,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+        ShaderMask(
+          shaderCallback: (bounds) => RadialGradient(
+            center: Alignment.center,
+            radius: 0.85,
+            colors: [
+              Colors.white,
+              Colors.white,
+              Colors.white.withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.7, 1.0],
+          ).createShader(bounds),
+          blendMode: BlendMode.dstIn,
+          child: SizedBox(
+            height: isMobile ? 400 : 500,
             child: Image.asset(
               'assets/images/contact_character.png',
               fit: BoxFit.contain,

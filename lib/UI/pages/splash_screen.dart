@@ -101,8 +101,9 @@ class _SplashScreenState extends State<SplashScreen>
                     child: Text(
                       AppStrings.welcomeMessage,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.pressStart2p(
-                        fontSize: 18,
+                      style: GoogleFonts.orbitron(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                         color: const Color.fromARGB(255, 233, 77, 30),
                       ),
                     ),

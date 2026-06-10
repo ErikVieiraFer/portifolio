@@ -65,7 +65,7 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
                     style: GoogleFonts.orbitron(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: state.currentTheme.colors.textPrimary,
+                      color: state.currentTheme.colors.primary,
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -75,13 +75,12 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
                     size: 20,
                   ),
                   
-                  // Menu expandido
                   if (_isExpanded) ...[
                     const SizedBox(width: 8),
                     Container(
                       width: 1,
                       height: 30,
-                      color: state.currentTheme.colors.border.withOpacity(0.3),
+                      color: state.currentTheme.colors.border.withValues(alpha: 0.3),
                     ),
                     const SizedBox(width: 8),
                     ...AppThemeType.values
@@ -108,10 +107,10 @@ class _ThemeSwitcherState extends State<ThemeSwitcher> {
           child: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: theme.colors.primary.withOpacity(0.2),
+              color: theme.colors.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: theme.colors.primary.withOpacity(0.5),
+                color: theme.colors.primary.withValues(alpha: 0.5),
                 width: 1,
               ),
             ),
@@ -170,7 +169,7 @@ class ThemeSwitcherDropdown extends StatelessWidget {
                       style: GoogleFonts.orbitron(
                         fontSize: 14,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        color: theme.colors.textPrimary,
+                        color: theme.colors.primary,
                       ),
                     ),
                     if (isSelected) ...[

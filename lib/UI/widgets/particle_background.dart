@@ -46,7 +46,7 @@ class _ParticleBackgroundState extends State<ParticleBackground>
     final isMobile = size.width < 600;
     final particleCount = isMobile ? 30 : 70;
     final themeState = context.read<ThemeCubit>().state;
-    final particleColor = themeState.currentTheme.colors.secondary.withOpacity(0.6);
+    final particleColor = themeState.currentTheme.colors.secondary.withValues(alpha: 0.6);
 
     _particles = List.generate(
       particleCount,
@@ -65,9 +65,8 @@ class _ParticleBackgroundState extends State<ParticleBackground>
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, themeState) {
         final colors = themeState.currentTheme.colors;
-        // Atualiza a cor das partículas quando o tema muda
         for (var p in _particles) {
-          p.color = colors.secondary.withOpacity(0.6);
+          p.color = colors.secondary.withValues(alpha: 0.6);
         }
 
         return MouseRegion(
@@ -78,7 +77,6 @@ class _ParticleBackgroundState extends State<ParticleBackground>
           },
           onExit: (event) {
             setState(() {
-              // Move a posição do mouse para um local "seguro" fora da tela
               _mousePosition = const Offset(-200, -200);
             });
           },
@@ -87,7 +85,7 @@ class _ParticleBackgroundState extends State<ParticleBackground>
             painter: ParticlePainter(
               particles: _particles,
               mousePosition: _mousePosition,
-              connectionColor: colors.primary.withOpacity(0.2),
+              connectionColor: colors.primary.withValues(alpha: 0.2),
             ),
           ),
         );

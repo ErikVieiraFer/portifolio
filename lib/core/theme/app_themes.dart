@@ -24,41 +24,39 @@ class AppThemes {
       ),
 
       // Text theme
-      textTheme: GoogleFonts.orbitronTextTheme(
-        TextTheme(
-          displayLarge: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: colors.textPrimary,
-          ),
-          displayMedium: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: colors.textPrimary,
-          ),
-          displaySmall: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: colors.textPrimary,
-          ),
-          headlineMedium: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: colors.textPrimary,
-          ),
-          bodyLarge: TextStyle(
-            fontSize: 16,
-            color: colors.textSecondary,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 14,
-            color: colors.textSecondary,
-          ),
-          labelLarge: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: colors.textPrimary,
-          ),
+      textTheme: TextTheme(
+        displayLarge: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: colors.textPrimary,
+        ),
+        displayMedium: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: colors.textPrimary,
+        ),
+        displaySmall: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: colors.textPrimary,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: colors.textPrimary,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 16,
+          color: colors.textSecondary,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          color: colors.textSecondary,
+        ),
+        labelLarge: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: colors.textPrimary,
         ),
       ),
 
@@ -121,7 +119,7 @@ class AppThemes {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colors.border.withOpacity(0.5)),
+          borderSide: BorderSide(color: colors.border.withValues(alpha: 0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -132,7 +130,7 @@ class AppThemes {
           borderSide: const BorderSide(color: Colors.redAccent),
         ),
         labelStyle: TextStyle(color: colors.textSecondary),
-        hintStyle: TextStyle(color: colors.textSecondary.withOpacity(0.5)),
+        hintStyle: TextStyle(color: colors.textSecondary.withValues(alpha: 0.5)),
       ),
 
       // FloatingActionButton theme
@@ -147,19 +145,19 @@ class AppThemes {
 
       // Divider theme
       dividerTheme: DividerThemeData(
-        color: colors.border.withOpacity(0.3),
+        color: colors.border.withValues(alpha: 0.3),
         thickness: 1,
       ),
 
       // Chip theme
       chipTheme: ChipThemeData(
-        backgroundColor: colors.primary.withOpacity(0.2),
+        backgroundColor: colors.primary.withValues(alpha: 0.2),
         selectedColor: colors.primary,
         labelStyle: GoogleFonts.orbitron(
           color: colors.textPrimary,
           fontSize: 12,
         ),
-        side: BorderSide(color: colors.primary.withOpacity(0.5)),
+        side: BorderSide(color: colors.primary.withValues(alpha: 0.5)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

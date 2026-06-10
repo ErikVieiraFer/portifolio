@@ -39,12 +39,16 @@ class _BudgetButtonState extends State<BudgetButton> {
         return MouseRegion(
           onEnter: (_) => setState(() => _isHovering = true),
           onExit: (_) => setState(() => _isHovering = false),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            margin: EdgeInsets.symmetric(
-              vertical: 60,
-              horizontal: isMobile ? 16 : 80,
-            ),
+          child: Transform.translate(
+            offset: const Offset(0, -30),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: EdgeInsets.only(
+                top: 0,
+                bottom: 60,
+                left: isMobile ? 16 : 80,
+                right: isMobile ? 16 : 80,
+              ),
             padding: EdgeInsets.all(isMobile ? 32 : 48),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -105,23 +109,27 @@ class _BudgetButtonState extends State<BudgetButton> {
                     ),
                     elevation: 8,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        AppStrings.budgetButton.toUpperCase(),
-                        style: GoogleFonts.orbitron(
-                          fontSize: isMobile ? 14 : 18,
-                          fontWeight: FontWeight.bold,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          AppStrings.budgetButton.toUpperCase(),
+                          style: GoogleFonts.orbitron(
+                            fontSize: isMobile ? 14 : 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Icon(Icons.arrow_forward, size: isMobile ? 20 : 24),
-                    ],
+                        const SizedBox(width: 12),
+                        Icon(Icons.arrow_forward, size: isMobile ? 20 : 24),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
+          ),
           ),
         );
       },

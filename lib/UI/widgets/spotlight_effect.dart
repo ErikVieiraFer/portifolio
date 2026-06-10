@@ -53,8 +53,8 @@ class _SpotlightPainter extends CustomPainter {
     final paint = Paint()
       ..shader = RadialGradient(
         colors: [
-          glowColor.withOpacity(0.15),
-          glowColor.withOpacity(0.0),
+          glowColor.withValues(alpha: 0.15),
+          glowColor.withValues(alpha: 0.0),
         ],
         stops: const [0.0, 1.0],
       ).createShader(Rect.fromCircle(center: mousePosition, radius: 250));

@@ -23,10 +23,7 @@ class Particle {
   }
 
   void update(Size bounds, Offset mousePosition) {
-    // Movimento
     position += speed;
-
-    // Efeito de repulsão do mouse
     final double distanceToMouse = (position - mousePosition).distance;
     if (distanceToMouse < 100.0) {
       final direction = (position - mousePosition).scale(1, 1);
@@ -34,7 +31,6 @@ class Particle {
       position += direction.scale(force, force) * 0.1;
     }
 
-    // Efeito de borda (wrap around)
     if (position.dx < 0) position = Offset(bounds.width, position.dy);
     if (position.dx > bounds.width) position = Offset(0, position.dy);
     if (position.dy < 0) position = Offset(position.dx, bounds.height);
@@ -65,13 +61,12 @@ class ParticlePainter extends CustomPainter {
       particlePaint.color = p1.color;
       canvas.drawCircle(p1.position, p1.radius, particlePaint);
 
-      // Desenha conexões
       for (int j = i + 1; j < particles.length; j++) {
         final p2 = particles[j];
         final distance = (p1.position - p2.position).distance;
 
         if (distance < 150.0) {
-          linePaint.color = connectionColor.withOpacity(1.0 - (distance / 150.0));
+          linePaint.color = connectionColor.withValues(alpha: 1.0 - (distance / 150.0));
           canvas.drawLine(p1.position, p2.position, linePaint);
         }
       }
@@ -80,6 +75,6 @@ class ParticlePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant ParticlePainter oldDelegate) {
-    return true; // Sempre redesenha para a animação
+    return true;
   }
 }

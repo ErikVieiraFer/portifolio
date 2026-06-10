@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> {
               SingleChildScrollView(
                 controller: _scrollController,
                 physics: const ClampingScrollPhysics(),
+                clipBehavior: Clip.none, // Permite overflow dos cards
                 child: Column(
                   children: [
                     // 1. HERO - Personagem + Nome

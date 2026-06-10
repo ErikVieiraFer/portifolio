@@ -17,9 +17,11 @@ class AboutMe extends StatelessWidget {
         final isMobile = MediaQuery.of(context).size.width < 600;
 
         return Container(
-          margin: EdgeInsets.symmetric(
-            vertical: 40,
-            horizontal: isMobile ? 16 : 80,
+          margin: EdgeInsets.only(
+            top: 120,
+            bottom: 0,
+            left: isMobile ? 16 : 80,
+            right: isMobile ? 16 : 80,
           ),
           child: isMobile
               ? Column(
@@ -40,7 +42,7 @@ class AboutMe extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Transform.translate(
-                        offset: const Offset(0, -30), // SOBE 30 pixels
+                        offset: const Offset(30, -200), // Mais acima
                         child: _buildImageSection(colors, isMobile),
                       ),
                     ),
@@ -91,30 +93,41 @@ class AboutMe extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Blur centralizado (não só na cabeça)
-        Container(
-          width: isMobile ? 400 : 400,
-          height: isMobile ? 450 : 500, // Mais alto para cobrir toda a imagem
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: colors.glow,
-                blurRadius: 60,
-                spreadRadius: 20,
-              ),
-            ],
+        Transform.translate(
+          offset: const Offset(0, 50),
+          child: Container(
+            width: isMobile ? 400 : 400,
+            height: isMobile ? 450 : 500,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: colors.glow,
+                  blurRadius: 60,
+                  spreadRadius: 20,
+                ),
+              ],
+            ),
           ),
         ),
-        // Imagem COM BORDA ARREDONDADA
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20), // BORDA ARREDONDADA
+        ShaderMask(
+          shaderCallback: (bounds) => RadialGradient(
+            center: Alignment.center,
+            radius: 0.85,
+            colors: [
+              Colors.white,
+              Colors.white,
+              Colors.white.withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.7, 1.0],
+          ).createShader(bounds),
+          blendMode: BlendMode.dstIn,
           child: SizedBox(
             width: isMobile ? 400 : 450,
             height: isMobile ? 450 : 550,
             child: Image.asset(
               'assets/images/about_character.png',
-              fit: BoxFit.cover, // Cover para preencher bem
+              fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
                   decoration: BoxDecoration(

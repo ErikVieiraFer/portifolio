@@ -60,18 +60,18 @@ class _ScannerPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withOpacity(0),
-          color.withOpacity(0.8),
+          color.withValues(alpha: 0),
+          color.withValues(alpha: 0.8),
           color,
-          color.withOpacity(0.8),
-          color.withOpacity(0),
+          color.withValues(alpha: 0.8),
+          color.withValues(alpha: 0),
         ],
         stops: const [0.0, 0.4, 0.5, 0.6, 1.0],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 15.0);
 
     final scannerY = size.height * position;
-    const scannerHeight = 150.0; // Aumenta a altura para um gradiente mais suave
+    const scannerHeight = 150.0;
 
     canvas.drawRect(
       Rect.fromLTWH(0, scannerY - (scannerHeight / 2), size.width, scannerHeight),

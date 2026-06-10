@@ -9,11 +9,13 @@ import 'package:portfolio_flutter/core/services/url_service.dart';
 class HolographicCard extends StatefulWidget {
   final Project project;
   final bool isCenter;
+  final VoidCallback? onTap;
 
   const HolographicCard({
     super.key,
     required this.project,
     this.isCenter = false,
+    this.onTap,
   });
 
   @override
@@ -31,23 +33,25 @@ class _HolographicCardState extends State<HolographicCard> {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovering = true),
       onExit: (_) => setState(() => _isHovering = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        transform: Matrix4.identity()
-          ..setEntry(3, 2, 0.001) // perspectiva
-          ..rotateX(_isHovering && widget.isCenter ? -0.05 : 0)
-          ..scale(widget.isCenter ? (_isHovering ? 1.03 : 1.0) : 0.95), // Zoom reduzido de 1.05 para 1.03
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001)
+            ..rotateX(_isHovering && widget.isCenter ? -0.05 : 0)
+            ..scale(widget.isCenter ? (_isHovering ? 1.03 : 1.0) : 0.95, widget.isCenter ? (_isHovering ? 1.03 : 1.0) : 0.95, 1.0),
         child: Container(
-          width: 280, // largura de smartphone
-          height: 580, // altura aumentada de 560 para 580 para garantir que cabe
+          width: 280,
+          height: 580,
           decoration: BoxDecoration(
-            // Borda do "dispositivo"
             color: Colors.black,
             borderRadius: BorderRadius.circular(32),
             border: Border.all(
               color: widget.isCenter
-                  ? colors.primary.withOpacity(0.8)
-                  : colors.border.withOpacity(0.5),
+                  ? colors.primary.withValues(alpha: 0.8)
+                  : colors.border.withValues(alpha: 0.5),
               width: 3,
             ),
             boxShadow: _isHovering && widget.isCenter
@@ -61,14 +65,14 @@ class _HolographicCardState extends State<HolographicCard> {
                 : [
                     BoxShadow(
                       color: widget.isCenter
-                          ? colors.primary.withOpacity(0.3)
+                          ? colors.primary.withValues(alpha: 0.3)
                           : Colors.black.withAlpha(127),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     )
                   ],
           ),
-          padding: const EdgeInsets.all(8), // borda do dispositivo
+          padding: const EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -77,7 +81,6 @@ class _HolographicCardState extends State<HolographicCard> {
             clipBehavior: Clip.antiAlias,
             child: Column(
               children: [
-                // "Notch" superior do celular
                 Container(
                   height: 30,
                   color: Colors.black,
@@ -93,20 +96,17 @@ class _HolographicCardState extends State<HolographicCard> {
                   ),
                 ),
 
-                // Tela do celular com imagem do projeto
                 Expanded(
                   child: Container(
                     color: Colors.white,
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        // Imagem do projeto
                         Image.asset(
                           widget.project.imagePath,
                           fit: BoxFit.cover,
                         ),
 
-                        // Overlay com informações (sempre visível se isCenter)
                         if (_isHovering || widget.isCenter)
                           Container(
                             decoration: BoxDecoration(
@@ -136,15 +136,15 @@ class _HolographicCardState extends State<HolographicCard> {
                                 Text(
                                   widget.project.description,
                                   style: GoogleFonts.orbitron(
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     color: Colors.white70,
+                                    height: 1.4,
                                   ),
-                                  maxLines: 3,
+                                  maxLines: 6,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 12),
 
-                                // Badges de tecnologias
                                 Wrap(
                                   spacing: 4,
                                   runSpacing: 4,
@@ -171,7 +171,6 @@ class _HolographicCardState extends State<HolographicCard> {
 
                                 const SizedBox(height: 12),
 
-                                // Botões de ação
                                 Row(
                                   children: [
                                     if (widget.project.githubUrl != null)
@@ -227,7 +226,6 @@ class _HolographicCardState extends State<HolographicCard> {
                   ),
                 ),
 
-                // "Barra" inferior do celular
                 Container(
                   height: 20,
                   color: Colors.black,
@@ -245,6 +243,7 @@ class _HolographicCardState extends State<HolographicCard> {
               ],
             ),
           ),
+        ),
         ),
       ),
     );

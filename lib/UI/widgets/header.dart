@@ -36,13 +36,16 @@ class _HeaderState extends State<Header> {
   }
 
   Widget _buildMobileLayout(colors, bool isMobile) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildCharacterImage(colors, isMobile),
-        const SizedBox(height: 30),
-        _buildNameSection(colors, isMobile),
-      ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildCharacterImage(colors, isMobile),
+          const SizedBox(height: 30),
+          _buildNameSection(colors, isMobile),
+        ],
+      ),
     );
   }
 
@@ -57,7 +60,8 @@ class _HeaderState extends State<Header> {
             children: [
               // Blur MENOR e concentrado
               Positioned(
-                left: isMobile ? 50 : 150, // AJUSTADO
+                left: isMobile ? 50 : 70, // Mais à esquerda
+                bottom: 100, // Mais acima
                 child: Container(
                   width: 400, // MENOR (era 550)
                   height: 400,
@@ -73,14 +77,24 @@ class _HeaderState extends State<Header> {
                   ),
                 ),
               ),
-              // Imagem mais à direita
               Positioned(
-                left: isMobile ? 30 : 120, // AJUSTADO (era 0)
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
+                left: isMobile ? 30 : 100,
+                bottom: 80,
+                child: ShaderMask(
+                  shaderCallback: (bounds) => RadialGradient(
+                    center: Alignment.center,
+                    radius: 0.85,
+                    colors: [
+                      Colors.white,
+                      Colors.white,
+                      Colors.white.withValues(alpha: 0.0),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                  ).createShader(bounds),
+                  blendMode: BlendMode.dstIn,
                   child: Image.asset(
                     'assets/images/hero_character.png',
-                    height: 550, // MENOR (era 600)
+                    height: 550,
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -114,39 +128,47 @@ class _HeaderState extends State<Header> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Nome com animação de digitação
-              DefaultTextStyle(
-                style: GoogleFonts.orbitron(
-                  fontSize: 56,
-                  fontWeight: FontWeight.bold,
-                  color: colors.accent,
-                  shadows: [
-                    Shadow(
-                      color: colors.glow,
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
-                child: AnimatedTextKit(
-                  isRepeatingAnimation: true, // Loop infinito
-                  repeatForever: true,
-                  pause: const Duration(milliseconds: 2000),
-                  animatedTexts: [
-                    TypewriterAnimatedText(
-                      AppStrings.developerName,
-                      speed: const Duration(milliseconds: 100),
-                    ),
-                  ],
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: DefaultTextStyle(
+                  style: GoogleFonts.orbitron(
+                    fontSize: 56,
+                    fontWeight: FontWeight.bold,
+                    color: colors.accent,
+                    shadows: [
+                      Shadow(
+                        color: colors.glow,
+                        blurRadius: 20,
+                      ),
+                    ],
+                  ),
+                  child: AnimatedTextKit(
+                    isRepeatingAnimation: true, // Loop infinito
+                    repeatForever: true,
+                    pause: const Duration(milliseconds: 2000),
+                    animatedTexts: [
+                      TypewriterAnimatedText(
+                        AppStrings.developerName,
+                        speed: const Duration(milliseconds: 100),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
               // Subtítulo
-              Text(
-                AppStrings.developerTitle,
-                style: GoogleFonts.orbitron(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: colors.secondary,
-                  letterSpacing: 2,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  AppStrings.developerTitle,
+                  style: GoogleFonts.orbitron(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: colors.secondary,
+                    letterSpacing: 2,
+                  ),
                 ),
               ),
             ],
@@ -177,9 +199,18 @@ class _HeaderState extends State<Header> {
             ],
           ),
         ),
-        // Imagem com cantos arredondados
-        ClipRRect(
-          borderRadius: BorderRadius.circular(30),
+        ShaderMask(
+          shaderCallback: (bounds) => RadialGradient(
+            center: Alignment.center,
+            radius: 0.85,
+            colors: [
+              Colors.white,
+              Colors.white,
+              Colors.white.withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.7, 1.0],
+          ).createShader(bounds),
+          blendMode: BlendMode.dstIn,
           child: Image.asset(
             'assets/images/hero_character.png',
             height: isMobile ? 400 : 600,

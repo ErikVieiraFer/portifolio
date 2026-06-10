@@ -27,9 +27,9 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
     return Column(
       children: [
         Container(
-          height: 750, // AUMENTADO para 750 para evitar cortes no hover
-          margin: const EdgeInsets.symmetric(vertical: 100), // AUMENTADO margem vertical
-          padding: const EdgeInsets.only(bottom: 60), // Padding inferior
+          height: 700,
+          margin: const EdgeInsets.symmetric(vertical: 40),
+          clipBehavior: Clip.none,
           child: CarouselSlider.builder(
             carouselController: _carouselController,
             itemCount: projectsList.length,
@@ -37,27 +37,38 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
               final project = projectsList[index];
               final isCenter = _currentIndex == index;
 
-              // Rotação 3D para itens não centrais
               final double rotationY = (index - _currentScrollValue).abs() > 0.5 ? (index - _currentScrollValue) * -0.2 : 0;
 
               final transform = Matrix4.identity()
-                ..setEntry(3, 2, 0.001) // Perspectiva
+                ..setEntry(3, 2, 0.001)
                 ..rotateY(rotationY.clamp(-0.3, 0.3));
 
-              return Transform(
-                transform: transform,
-                alignment: Alignment.center,
-                child: HolographicCard(
-                  project: project,
-                  isCenter: isCenter,
+              return OverflowBox(
+                maxWidth: 350,
+                maxHeight: 700,
+                child: Transform(
+                  transform: transform,
+                  alignment: Alignment.center,
+                  child: HolographicCard(
+                    project: project,
+                    isCenter: isCenter,
+                    onTap: isCenter ? null : () {
+                      _carouselController.animateToPage(
+                        index,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOutCubic,
+                      );
+                    },
+                  ),
                 ),
               );
             },
             options: CarouselOptions(
-              height: 680, // Altura interna maior
-              viewportFraction: isMobile ? 0.85 : 0.35, // Mais espaço entre os cards
+              height: 650,
+              viewportFraction: isMobile ? 0.85 : 0.35,
               enlargeCenterPage: true,
-              enlargeFactor: 0.3, // Card central maior mas não exagerado
+              enlargeFactor: 0.2,
+              clipBehavior: Clip.none,
               autoPlay: true,
               autoPlayInterval: const Duration(seconds: 5),
               onPageChanged: (index, reason) {
@@ -75,8 +86,7 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
             ),
           ),
         ),
-        const SizedBox(height: 20),
-        // Indicadores e botões de navegação
+        const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -94,7 +104,7 @@ class _ProjectsCarouselState extends State<ProjectsCarousel> {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentIndex == index ? colors.primary : colors.secondary.withOpacity(0.5),
+                    color: _currentIndex == index ? colors.primary : colors.secondary.withValues(alpha: 0.5),
                   ),
                 ),
               );
